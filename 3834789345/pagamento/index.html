@@ -734,8 +734,8 @@
 
       function redirecionarAprovado(txId, gateway) {
         const urlParams = new URLSearchParams(window.location.search);
-        const next = urlParams.get('next') || '/upsell/1/';
-        const redirectUrl = new URL(next, window.location.origin);
+        const next = urlParams.get('next') || '../upsell/1/';
+        const redirectUrl = new URL(next, window.location.href);
         redirectUrl.searchParams.set('funil_ok', '1');
         const nome = urlParams.get('nome') || '';
         const cpf = urlParams.get('cpf') || '';

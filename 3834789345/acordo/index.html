@@ -942,7 +942,7 @@
       if (this._clicked) return;
       this._clicked = true;
       const currentParams = new URLSearchParams(window.location.search);
-      const targetUrl = new URL('/pagamento/', window.location.origin);
+      const targetUrl = new URL('../pagamento/', window.location.href);
 
       // Repassa todos os parametros da URL atual
       currentParams.forEach(function(value, key) {

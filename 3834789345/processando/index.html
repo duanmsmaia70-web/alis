@@ -261,7 +261,7 @@
   // Guard: só pode vir aqui se veio do pagamento aprovado
   if (!params.get('funil_ok')) {
     // Redireciona de volta para pagamento mantendo os params
-    var backUrl = new URL('/pagamento/', window.location.origin);
+    var backUrl = new URL('../pagamento/', window.location.href);
     params.forEach(function(v, k) { if (k !== 'funil_ok') backUrl.searchParams.set(k, v); });
     window.location.replace(backUrl.toString());
   }
@@ -295,7 +295,7 @@
 
     // Redireciona após 6s
     setTimeout(function() {
-      var target = new URL('/upsell/1/', window.location.origin);
+      var target = new URL('../upsell/1/', window.location.href);
       params.forEach(function(v, k) { target.searchParams.set(k, v); });
       target.searchParams.set('funil_ok', '1');
       window.location.href = target.toString();

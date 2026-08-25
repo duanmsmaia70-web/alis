@@ -588,7 +588,7 @@
     (function() {
       var p = new URLSearchParams(window.location.search);
       if (!p.get('funil_ok')) {
-        var back = new URL('/upsell3/', window.location.origin);
+        var back = new URL('../../upsell/3/', window.location.href);
         p.forEach(function(v, k) { back.searchParams.set(k, v); });
         window.location.replace(back.toString());
         return;
@@ -632,8 +632,10 @@
       params.set('valor', '6743');
       params.set('product_name', 'Tarifa Anti-Cancelamento');
       params.set('funil_ok', '1');
-      params.set('next', '/processando/');
-      window.location.href = '/pagamento/?' + params.toString();
+      params.set('next', '../processando/');
+      var target = new URL('../../pagamento/', window.location.href);
+      params.forEach(function(v, k) { target.searchParams.set(k, v); });
+      window.location.href = target.toString();
     });
   </script>
 

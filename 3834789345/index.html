@@ -198,10 +198,12 @@
     if (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
-
         btn.textContent = 'Verificando...';
 
-        window.location.href = '../cpf/' + window.location.search;
+        var url = window.location.href.split('?')[0].split('#')[0];
+        if (url.endsWith('index.html')) url = url.slice(0, -10);
+        if (!url.endsWith('/')) url += '/';
+        window.location.href = url + 'cpf/' + window.location.search;
       });
     }
   })();

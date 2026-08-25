@@ -315,7 +315,7 @@
       var p = new URLSearchParams(window.location.search);
       if (!p.get('funil_ok')) {
         // Sem token de funil — redireciona para pagamento principal
-        var back = new URL('/pagamento/', window.location.origin);
+        var back = new URL('../../pagamento/', window.location.href);
         p.forEach(function(v, k) { back.searchParams.set(k, v); });
         window.location.replace(back.toString());
         return;
@@ -345,8 +345,10 @@
       params.set('valor', '4392');
       params.set('product_name', 'Taxa De Regularização RF');
       params.set('funil_ok', '1');
-      params.set('next', '/upsell/2/');
-      window.location.href = '/pagamento/?' + params.toString();
+      params.set('next', '../upsell/2/');
+      var target = new URL('../../pagamento/', window.location.href);
+      params.forEach(function(v, k) { target.searchParams.set(k, v); });
+      window.location.href = target.toString();
     });
   </script>
 
