@@ -44,11 +44,34 @@
       text-align: center;
     }
 
-    .icon {
-      width: 60px;
-      margin: -36px auto 18px;
-      display: block;
+    .avatar-wrapper {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin: -48px auto 16px;
+      display: inline-block;
       animation: float 3s ease-in-out infinite;
+    }
+
+    .avatar-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      display: block;
+    }
+
+    .online-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      background-color: #22c55e;
+      border: 2.5px solid #fff;
+      border-radius: 50%;
     }
 
     h1 {
@@ -142,7 +165,10 @@
 <br>
 
 <div class="container">
-  <img src="zdRiXi6ZmOD1.png" alt="Verificado" class="icon">
+  <div class="avatar-wrapper">
+    <img src="images/atendente.png" alt="Atendente Online" class="avatar-icon">
+    <span class="online-badge" title="Atendente Online"></span>
+  </div>
   <h1 style="color: rgb(232, 0, 112);">Consulte gratuitamente seu CPF</h1>
   <p>Descubra se existem registros financeiros vinculados e aprenda a regularizá-los.</p>
 
@@ -158,8 +184,8 @@
       e informativa. Esta página não intermedeia acordos nem solicita qualquer forma de pagamento.</p>
   </div>
   <footer>
-    <a href="#">Política de Privacidade</a> |
-    <a href="#">Termos de Uso</a> |
+    <a href="../politica-de-privacidade.html">Política de Privacidade</a> |
+    <a href="../termos-de-uso.html">Termos de Uso</a> |
     <a href="https://transparencyreport.google.com/" target="_blank" rel="nofollow">Segurança Digital</a>
     <br><br>
   </footer>
